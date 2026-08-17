@@ -1,0 +1,8 @@
+# Local VM testing artifacts (Arch ISO, VirtualBox disk images, screenshots,
+# scratch HTTP server files) — not part of the FROST distro itself.
+vm-test/
+
+# Editor/OS noise
+.DS_Store
+Thumbs.db
+*.swp
