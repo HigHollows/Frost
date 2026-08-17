@@ -1,0 +1,10 @@
+[Unit]
+Description=Run the FROST daily local security posture audit
+
+[Timer]
+OnCalendar=daily
+RandomizedDelaySec=15min
+Persistent=true
+
+[Install]
+WantedBy=timers.target

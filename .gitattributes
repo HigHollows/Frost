@@ -21,4 +21,7 @@ LICENSE text eol=lf
 *.example text eol=lf
 *.local text eol=lf
 *.ovpn text eol=lf
+*.service text eol=lf
+*.timer text eol=lf
+*.state text eol=lf
 *.png binary

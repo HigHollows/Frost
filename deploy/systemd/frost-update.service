@@ -1,0 +1,12 @@
+[Unit]
+Description=FROST weekly update check (and apply, only if opted in)
+Documentation=file:///opt/frost/DEPLOY.README.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+# frost-update.sh itself reads FROST_AUTO_APPLY_UPDATES from
+# /etc/frost/frost.conf — "false" (the default) means check + notify
+# only, never touches packages unattended.
+ExecStart=/opt/frost/bin/frost-update.sh --from-timer

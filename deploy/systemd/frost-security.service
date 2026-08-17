@@ -1,0 +1,12 @@
+[Unit]
+Description=FROST daily local security posture audit
+Documentation=file:///opt/frost/DEPLOY.README.md
+After=network-online.target
+
+[Service]
+Type=oneshot
+# Local posture audit ONLY — firewall/fail2ban/listening-ports/pending-
+# updates on THIS machine. Deliberately never launches scans against any
+# external target: an unattended timer has no way to verify authorization
+# for that, so it must never attempt it. See DEPLOY.README.md.
+ExecStart=/opt/frost/bin/frost-security-audit.sh

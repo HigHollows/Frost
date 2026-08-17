@@ -38,7 +38,15 @@ No installer GUI, no hidden magic: FROST is three readable, commented, failsafe 
 
 ## Quick start
 
-Run as root, either from the Arch live ISO (bootstrap mode — installs to a disk you've already partitioned and mounted) or on an already-installed Arch system (local mode, auto-detected):
+Run as root, either from the Arch live ISO (bootstrap mode — installs to a disk you've already partitioned and mounted) or on an already-installed Arch system (local mode, auto-detected).
+
+**One command, everything** — core + branding + security tools + gaming/dev stack + the update/monitoring layer, with pre-flight checks, checkpoints, and progress reporting:
+
+```bash
+sudo ./frost-deploy.sh --target /mnt --username yourname --profile server
+```
+
+**Or step by step**, if you only want part of it:
 
 ```bash
 # 1. Foundations: base system + dev toolchain + /opt/frost/
@@ -49,9 +57,14 @@ sudo ./frost-phase2.sh --target /mnt
 
 # 3. Hostname/locale/bootloader + user account + optional profile + ISO packaging
 sudo ./frost-phase3.sh --target /mnt --username yourname --profile server
+
+# optional packs, any subset, in any order after the above:
+sudo ./frost-branding.sh --target /mnt      # GRUB theme, Plymouth splash, MOTD, zsh
+sudo ./frost-security.sh --target /mnt         # pentest toolkit, firewall, VPN, SSH hardening
+sudo ./frost-gaming.sh --target /mnt              # Steam/Lutris/Heroic, dev stack, frost --mode
 ```
 
-Every script supports `--dry-run` (see what would happen, change nothing) and fails safe: on error, changes made *by that run* are rolled back automatically (config backups restored, partial files removed, thrown-away build users deleted).
+Every script supports `--dry-run` (see what would happen, change nothing) and fails safe: on error, changes made *by that run* are rolled back automatically (config backups restored, partial files removed, thrown-away build users deleted). See [DEPLOY.README.md](DEPLOY.README.md) for what "rollback" means at the `frost-deploy.sh` level specifically (per-phase, not a magic full-system undo).
 
 Full flag reference and design notes for each phase:
 
@@ -61,6 +74,7 @@ Full flag reference and design notes for each phase:
 - [BRANDING.README.md](BRANDING.README.md) — Boot & Aesthetic pack: GRUB theme, Plymouth splash, MOTD, zsh
 - [SECURITY.README.md](SECURITY.README.md) — Security & Hacking Tools pack: pentest toolkit, firewall, VPN, SSH hardening
 - [GAMING.README.md](GAMING.README.md) — Gaming & Dev Stack pack: Steam/Lutris/Heroic, languages/DBs/IDEs, performance tuning, `frost --mode`
+- [DEPLOY.README.md](DEPLOY.README.md) — Deployment & Auto-Update pack: master orchestrator, systemd timers, config, uninstall
 
 ## Requirements
 
@@ -78,14 +92,20 @@ frost-phase3.sh              Phase 3 script
 frost-branding.sh             Boot & Aesthetic pack (optional, run after Phase 3)
 frost-security.sh              Security & Hacking Tools pack (optional, run after Phase 2/3)
 frost-gaming.sh                  Gaming & Dev Stack pack (optional, run after Phase 2/3)
+frost-deploy.sh                    Master orchestrator — chains all six scripts + ops layer
+frost-update.sh                     Update checker/applier (installed to /opt/frost/bin by deploy)
+frost-status.sh                      Health check / monitor daemon
+frost-uninstall.sh                    Clean removal
 frost-build.README.md         Phase 1 docs
 frost-phase2.README.md        Phase 2 docs
 frost-phase3.README.md        Phase 3 docs
 BRANDING.README.md             Boot & Aesthetic pack docs
 SECURITY.README.md              Security & Hacking Tools pack docs
 GAMING.README.md                 Gaming & Dev Stack pack docs
+DEPLOY.README.md                  Deployment & Auto-Update pack docs
 branding/                        GRUB/Plymouth/MOTD/zsh assets + generator (see BRANDING.README.md)
 security/                         VPN/SSH/fail2ban config templates (see SECURITY.README.md)
+deploy/                            lib/systemd units/config template (see DEPLOY.README.md)
 ARCHITECTURE.md                Design notes, safety model, lessons from real testing
 ROADMAP.md                      Where FROST is headed
 CONTRIBUTING.md                  Commit convention, code conventions

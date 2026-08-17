@@ -1,0 +1,24 @@
+[Unit]
+Description=FROST background health monitoring daemon
+Documentation=file:///opt/frost/DEPLOY.README.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# frost-status.sh --watch loops its own health check internally and never
+# exits on its own — Restart=on-failure brings it back if it ever does.
+ExecStart=/opt/frost/bin/frost-status.sh --watch 300
+Restart=on-failure
+RestartSec=30
+Nice=10
+IOSchedulingClass=idle
+# Defense in depth: this daemon only reads system state, never needs to
+# write outside its own log directory or /run.
+ProtectSystem=strict
+ReadWritePaths=/var/log/frost
+ProtectHome=read-only
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

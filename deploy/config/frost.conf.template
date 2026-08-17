@@ -1,0 +1,34 @@
+# /etc/frost/frost.conf — FROST central configuration.
+#
+# Plain KEY=value bash — sourced by every operations script via
+# /opt/frost/lib/frost-common.sh's load_config(). Syntax-checked with
+# `bash -n` before it's ever sourced (see validate_config() in that lib,
+# or run frost-status.sh which reports validity directly); an invalid
+# file is IGNORED with a warning, never sourced half-broken.
+
+# Overall FROST system version (independent of each script's own
+# internal SCRIPT_VERSION — this is the "FROST vX.Y" shown in banners).
+FROST_VERSION="2.0"
+
+# Comma-separated list of installed optional packs, kept in sync by
+# frost-deploy.sh as each one completes: core,branding,security,gaming
+FROST_COMPONENTS="core"
+
+# The sudo-capable user frost-phase3.sh created — operations scripts
+# (desktop notifications, AUR delegation) target this account.
+FROST_TARGET_USER=""
+
+# Safety default: frost-update.timer only CHECKS for updates and
+# notifies by default. Flip to "true" to let the weekly timer actually
+# run `pacman -Syu` unattended — think about it before you do (a broken
+# unattended update with nobody watching is a bad time).
+FROST_AUTO_APPLY_UPDATES="false"
+
+# Whether frost-update.sh also checks AUR package updates (needs the
+# Phase 2 AUR helper + a delegate user to be meaningful).
+FROST_UPDATE_CHECK_AUR="true"
+
+# Informational only right now — balanced|gaming|dev, mirrors whichever
+# `frost --mode` was last run (frost-gaming.sh pack). Not read by any
+# script yet; reserved for frost-status.sh reporting.
+FROST_PERFORMANCE_MODE="balanced"

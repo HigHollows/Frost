@@ -1,0 +1,17 @@
+[Unit]
+Description=FROST hourly cleanup & optimization pass
+Documentation=file:///opt/frost/DEPLOY.README.md
+
+[Service]
+Type=oneshot
+# Each step is cheap/idempotent by design (paccache and journal vacuum
+# are no-ops when there's nothing to trim) so hourly is fine — and the
+# leading "-" means one missing tool (e.g. docker, if the gaming/dev
+# pack was skipped, or pacman-contrib for paccache) doesn't fail the
+# whole unit. Deliberately does NOT sweep /tmp itself — systemd-tmpfiles
+# already owns that safely system-wide; a second, cruder janitor here
+# risks deleting a file some other process still has open.
+ExecStart=-/usr/bin/paccache -r -k3
+ExecStart=-/usr/bin/paccache -ruk0
+ExecStart=-/usr/bin/journalctl --vacuum-time=7d
+ExecStart=-/usr/bin/docker system prune -f
