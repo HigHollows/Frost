@@ -16,14 +16,16 @@ desktop-image: "background.png"
 desktop-color: "#05080c"
 terminal-font: "Frost Regular 16"
 
-# FROST wordmark, centered a bit above the menu.
+# FROST crystal mark, centered above the menu. Dimensions match the
+# 185x260 output of branding/tools/generate_assets.py — regenerate that
+# if you resize the logo and update these to match.
 + image {
     id = "frost_logo"
     file = "frost-logo.png"
-    left = 50%-333
-    top = 8%
-    width = 665
-    height = 244
+    left = 50%-92
+    top = 6%
+    width = 185
+    height = 260
 }
 
 + boot_menu {

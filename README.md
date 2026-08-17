@@ -1,5 +1,7 @@
 # FROST
 
+<img src="branding/logo/frost-logo.png" alt="FROST logo" width="140">
+
 **A minimalist Arch Linux distribution for full-stack developers.**
 
 FROST strips Arch down to a clean, reproducible base and layers on exactly what a full-stack dev needs to be productive on day one — a container runtime, a modern editor, a JS/Python toolchain, sane shell defaults — without dragging in a heavyweight desktop environment or opinionated bloat you'll spend an afternoon ripping out.

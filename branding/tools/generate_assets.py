@@ -1,26 +1,34 @@
 #!/usr/bin/env python3
-"""Generates the FROST branding image assets: GRUB background + logo,
-and the Plymouth boot-animation frames.
+"""Generates the FROST branding image assets: GRUB/Plymouth backgrounds,
+the dark-theme logo variants derived from the canonical logo, and the
+Plymouth boot-animation frames.
 
-Kept in the repo (not just the output PNGs) so every visual asset is
-reproducible from source, in keeping with FROST's "no unexplained
-binaries" principle — regenerate anytime with:
+The canonical logo (branding/logo/frost-logo.png) is hand-designed art,
+committed as-is — everything else in this file is derived from it or
+generated outright, in keeping with FROST's "no unexplained binaries"
+principle. Regenerate the derived assets anytime with:
 
     python branding/tools/generate_assets.py
 
-Requires Pillow (`pip install Pillow`). Uses a system monospace font for
-the rasterized ASCII logo; falls back to Pillow's built-in bitmap font
-if none of the common ones are found (uglier, but still works).
+Requires Pillow (`pip install Pillow`).
 """
 import math
 import os
 
-from PIL import Image, ImageDraw, ImageFont, ImageFilter
+from PIL import Image, ImageDraw, ImageFilter
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 GRUB_DIR = os.path.join(HERE, "..", "grub")
 PLYMOUTH_FRAMES_DIR = os.path.join(HERE, "..", "plymouth", "frames")
 PLYMOUTH_DIR = os.path.join(HERE, "..", "plymouth")
+LOGO_DIR = os.path.join(HERE, "..", "logo")
+# The as-provided file has no real alpha channel (checked: fully opaque) —
+# its "transparent" background was flattened into a very-light-gray
+# checkerboard (~#F6F6F6/#FEFEFE) instead of true transparency. We rebuild
+# a real alpha mask from it (see extract_logo_alpha) rather than use it
+# as-is; frost-logo-source.png is kept untouched for provenance.
+SOURCE_LOGO = os.path.join(LOGO_DIR, "frost-logo-source.png")
+CANONICAL_LOGO = os.path.join(LOGO_DIR, "frost-logo.png")
 
 # Glacier palette
 BG_TOP = (5, 8, 12)          # near-black
@@ -28,34 +36,6 @@ BG_BOTTOM = (10, 40, 64)      # deep glacier blue
 GLOW = (60, 140, 190)          # soft cyan-blue glow behind the logo
 ICE = (170, 225, 250)           # bright ice-blue for logo/snow
 ICE_DIM = (110, 175, 210)
-
-FROST_ASCII = [
-    r" ███████╗██████╗  ██████╗ ███████╗████████╗",
-    r" ██╔════╝██╔══██╗██╔═══██╗██╔════╝╚══██╔══╝",
-    r" █████╗  ██████╔╝██║   ██║███████╗   ██║",
-    r" ██╔══╝  ██╔══██╗██║   ██║╚════██║   ██║",
-    r" ██║     ██║  ██║╚██████╔╝███████║   ██║",
-    r" ╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚══════╝   ╚═╝",
-    r"        minimalist Arch for full-stack devs",
-]
-
-FONT_CANDIDATES = [
-    r"C:\Windows\Fonts\consola.ttf",
-    r"C:\Windows\Fonts\CascadiaMono.ttf",
-    r"C:\Windows\Fonts\lucon.ttf",
-    "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf",
-]
-
-
-def find_font(size):
-    for path in FONT_CANDIDATES:
-        if os.path.exists(path):
-            try:
-                return ImageFont.truetype(path, size)
-            except OSError:
-                continue
-    return ImageFont.load_default()
-
 
 def make_background(width=1280, height=720):
     img = Image.new("RGB", (width, height), BG_TOP)
@@ -86,26 +66,68 @@ def make_background(width=1280, height=720):
     print(f"wrote {out} ({os.path.getsize(out) // 1024} KiB)")
 
 
-def make_logo():
-    font = find_font(28)
-    # Measure with a scratch image
-    scratch = Image.new("RGBA", (10, 10))
-    d = ImageDraw.Draw(scratch)
-    line_h = font.getbbox("Mg")[3] + 6
-    width = max(d.textlength(line, font=font) for line in FROST_ASCII)
-    width = int(width) + 20
-    height = line_h * len(FROST_ASCII) + 20
+def extract_logo_alpha(img, ink_below=150, clear_above=232):
+    """Rebuilds a real alpha mask from the flattened source: pixels at or
+    below `ink_below` brightness are the crystal's black linework (fully
+    opaque); pixels at or above `clear_above` are checkerboard/background
+    (fully transparent); in between is a smooth ramp for anti-aliased
+    edges. This deliberately treats the source's "white" facets as
+    background too — they're not reliably distinguishable from the
+    checkerboard by brightness alone (both sit in the 240-255 range) — so
+    what survives is the crystal's outline + shadow-facet linework as a
+    clean silhouette, not the full black/white faceted shading.
+    """
+    gray = img.convert("L")
 
-    img = Image.new("RGBA", (width, height), (0, 0, 0, 0))
-    d = ImageDraw.Draw(img)
-    for i, line in enumerate(FROST_ASCII):
-        color = ICE if i < len(FROST_ASCII) - 1 else ICE_DIM
-        d.text((10, 10 + i * line_h), line, font=font, fill=color + (255,))
+    def alpha_fn(v):
+        if v <= ink_below:
+            return 255
+        if v >= clear_above:
+            return 0
+        return int(255 * (clear_above - v) / (clear_above - ink_below))
 
+    return gray.point(alpha_fn)
+
+
+def recolor_with_alpha(alpha, size, color):
+    solid = Image.new("RGBA", size, color + (255,))
+    solid.putalpha(alpha)
+    return solid
+
+
+def make_logo_variants():
+    if not os.path.exists(SOURCE_LOGO):
+        raise SystemExit(
+            f"Source logo not found at {SOURCE_LOGO} — place the designer's "
+            "PNG there before running this script."
+        )
+    source = Image.open(SOURCE_LOGO).convert("RGB")
+    alpha = extract_logo_alpha(source)
+
+    # Canonical logo: black linework on a real transparent background —
+    # for README / any light-background use.
+    canonical = recolor_with_alpha(alpha, source.size, (10, 12, 15))
+    canonical.save(CANONICAL_LOGO, optimize=True)
+    print(f"wrote {CANONICAL_LOGO} ({canonical.width}x{canonical.height}, {os.path.getsize(CANONICAL_LOGO) // 1024} KiB)")
+
+    # Dark-theme variant: bright ice-blue linework, for GRUB/Plymouth.
+    dark = recolor_with_alpha(alpha, source.size, ICE)
+
+    def sized(img, target_h):
+        w = int(img.width * (target_h / img.height))
+        return img.resize((w, target_h), Image.LANCZOS)
+
+    grub_logo = sized(dark, 260)
     out = os.path.join(GRUB_DIR, "frost-logo.png")
-    img.save(out, optimize=True)
-    print(f"wrote {out} ({img.width}x{img.height}, {os.path.getsize(out) // 1024} KiB)")
-    return img.size
+    grub_logo.save(out, optimize=True)
+    print(f"wrote {out} ({grub_logo.width}x{grub_logo.height}, {os.path.getsize(out) // 1024} KiB)")
+
+    plymouth_logo = sized(dark, 190)
+    out = os.path.join(PLYMOUTH_DIR, "frost-logo.png")
+    plymouth_logo.save(out, optimize=True)
+    print(f"wrote {out} ({plymouth_logo.width}x{plymouth_logo.height}, {os.path.getsize(out) // 1024} KiB)")
+
+    return grub_logo.size, plymouth_logo.size
 
 
 def draw_snowflake(draw, cx, cy, radius, growth, width=3, color=ICE):
@@ -183,7 +205,7 @@ if __name__ == "__main__":
     os.makedirs(GRUB_DIR, exist_ok=True)
     os.makedirs(PLYMOUTH_DIR, exist_ok=True)
     make_background()
-    make_logo()
+    grub_size, plymouth_size = make_logo_variants()
     make_plymouth_background()
     make_plymouth_frames()
-    print("done.")
+    print(f"done. GRUB logo: {grub_size}, Plymouth logo: {plymouth_size}")

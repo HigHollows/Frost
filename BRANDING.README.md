@@ -4,15 +4,19 @@ Visual identity for FROST: GRUB theme, Plymouth boot splash, `/etc/motd`, and zs
 
 ```
 branding/
+  logo/
+    frost-logo-source.png       the designer's original file, untouched, kept for provenance
+    frost-logo.png                cleaned up: real alpha channel, black linework — for light backgrounds (README, docs)
   grub/
-    theme.txt              GRUB2 graphical theme (background + wordmark + menu colors)
+    theme.txt              GRUB2 graphical theme (background + crystal mark + menu colors)
     frost-grub.cfg           /etc/default/grub overrides (merged in, not overwritten)
     background.png            generated: black -> glacier-blue gradient, 1280x720
-    frost-logo.png             generated: rasterized FROST ASCII wordmark
+    frost-logo.png             derived from logo/frost-logo.png: ice-blue linework, sized for the theme
   plymouth/
     frost.plymouth            theme metadata
     frost.script                boot animation (Plymouth script language)
     background.png              same gradient as GRUB, full screen
+    frost-logo.png               same ice-blue mark as the GRUB one, smaller
     lock.png                     dim "paused" snowflake, shown at a LUKS password prompt
     frames/frame1.png .. frame8.png   8-frame growing-snowflake animation
   motd/
@@ -22,8 +26,12 @@ branding/
   zsh/
     frost.zshrc                   aliases, prompt, colors — sourced, not copied per-user
   tools/
-    generate_assets.py            regenerates every PNG above (`pip install Pillow` + run it)
+    generate_assets.py            regenerates every derived PNG above (`pip install Pillow` + run it)
 ```
+
+### About the logo
+
+`branding/logo/frost-logo-source.png` is the designer-provided file, kept untouched. It turned out to have **no real transparency** — its background was flattened into a very-light-gray checkerboard baked directly into the pixels instead of an alpha channel, which would've shown as a faint gray box around the mark wherever it was placed. `generate_assets.py` rebuilds a real alpha mask from it (dark linework → opaque, everything near-white → transparent) and recolors it per context: black on transparent for the README, ice-blue on transparent for GRUB/Plymouth. If you swap in a new source logo, make sure it actually exports with a genuine alpha channel — check with `Image.open(path).convert("RGBA").split()[3].getextrema()`; if that prints `(255, 255)`, there's no real transparency to work with either.
 
 ## ⚠️ Important: this depends on Phase 3, not just Phase 1
 
