@@ -19,7 +19,7 @@
 - [ ] **Secure Boot support** for the systemd-boot path (signed kernel/bootloader), for users who need it.
 - [ ] **ARM validation.** The architecture-detection branch for `aarch64`/`armv7h` has never been run against real ARM hardware or a matching QEMU target — only reasoned about. Needs an actual test pass the way x86_64 got one.
 - [ ] **Non-`en_US`/`UTC` presets.** `--locale`/`--timezone` already work for any valid value; a documented set of common presets (`fr_FR.UTF-8` + `Europe/Paris`, etc.) would save typing for non-US users.
-- [ ] **Contribution guide.** Once the project has more than one contributor, a `CONTRIBUTING.md` covering the safety model (rollback expectations, `chroot_exec` string-not-array rule, `--dry-run` requirement for new steps) so new code doesn't reintroduce the bugs documented in `ARCHITECTURE.md`.
+- [x] **Contribution guide.** [CONTRIBUTING.md](CONTRIBUTING.md) — commit message convention (emoji + type, full body posted to Discord) and the safety-model rules new code must follow.
 
 ## Explicitly out of scope (for now)
 

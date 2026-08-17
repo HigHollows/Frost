@@ -75,6 +75,7 @@ frost-phase2.README.md        Phase 2 docs
 frost-phase3.README.md        Phase 3 docs
 ARCHITECTURE.md                Design notes, safety model, lessons from real testing
 ROADMAP.md                      Where FROST is headed
+CONTRIBUTING.md                  Commit convention, code conventions
 LICENSE                          MIT
 ```
 
