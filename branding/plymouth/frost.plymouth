@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=Frost
+Description=FROST minimalist glacier boot animation - a snowflake grows while the system boots
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/frost
+ScriptFile=/usr/share/plymouth/themes/frost/frost.script

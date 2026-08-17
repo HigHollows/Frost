@@ -6,3 +6,17 @@
 .gitattributes text eol=lf
 .gitignore text eol=lf
 LICENSE text eol=lf
+
+# Branding pack: config/scripts stay LF (some get sourced/executed on
+# target Linux systems), images are explicitly binary so nothing ever
+# tries to line-ending-convert them.
+*.py text eol=lf
+*.txt text eol=lf
+*.script text eol=lf
+*.plymouth text eol=lf
+*.cfg text eol=lf
+*.conf text eol=lf
+*.template text eol=lf
+*.zshrc text eol=lf
+*.example text eol=lf
+*.png binary

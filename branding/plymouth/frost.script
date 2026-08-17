@@ -1,0 +1,94 @@
+// FROST Plymouth boot animation.
+//
+// Deliberately light: one full-screen background, one static logo, and
+// an 8-frame snowflake that grows then resets in a loop (~2.5s/cycle at
+// the default refresh rate) — no video, no dozens of frames.
+
+// ---- background (matches the GRUB gradient) ----
+background_image = Image("background.png");
+background_sprite = Sprite(background_image.Scale(Window.GetWidth(), Window.GetHeight()));
+background_sprite.SetZ(-100);
+
+// ---- FROST wordmark, upper third ----
+logo_image = Image("frost-logo.png");
+logo_sprite = Sprite(logo_image);
+logo_sprite.SetX(Window.GetWidth() / 2 - logo_image.GetWidth() / 2);
+logo_sprite.SetY(Window.GetHeight() * 0.22);
+logo_sprite.SetZ(10);
+
+// ---- snowflake animation frames ----
+frame_count = 8;
+frame_image[1] = Image("frames/frame1.png");
+frame_image[2] = Image("frames/frame2.png");
+frame_image[3] = Image("frames/frame3.png");
+frame_image[4] = Image("frames/frame4.png");
+frame_image[5] = Image("frames/frame5.png");
+frame_image[6] = Image("frames/frame6.png");
+frame_image[7] = Image("frames/frame7.png");
+frame_image[8] = Image("frames/frame8.png");
+
+flake_sprite = Sprite(frame_image[1]);
+flake_sprite.SetX(Window.GetWidth() / 2 - frame_image[1].GetWidth() / 2);
+flake_sprite.SetY(Window.GetHeight() * 0.5 - frame_image[1].GetHeight() / 2);
+flake_sprite.SetZ(10);
+
+frame_index = 1;
+tick = 0;
+ticks_per_frame = 4; // slow the loop down relative to the refresh rate
+
+fun refresh_callback() {
+    tick++;
+    if (tick >= ticks_per_frame) {
+        tick = 0;
+        frame_index++;
+        if (frame_index > frame_count) {
+            frame_index = 1;
+        }
+        flake_sprite.SetImage(frame_image[frame_index]);
+    }
+}
+Plymouth.SetRefreshFunction(refresh_callback);
+
+// ---- status text (systemd unit messages, quiet by default) ----
+status_text = "";
+status_sprite = Sprite();
+status_sprite.SetPosition(Window.GetWidth() / 2, Window.GetHeight() * 0.7, 10);
+
+fun message_callback(text) {
+    status_text = text;
+}
+Plymouth.SetMessageFunction(message_callback);
+
+// ---- LUKS / disk-unlock password prompt ----
+// Minimal but functional: a lock glyph + masked input, so an eventual
+// encrypted-root setup (see ROADMAP.md) doesn't hit an unstyled prompt.
+prompt_active = false;
+password_dots = "";
+
+fun display_password_callback(prompt, bullets) {
+    prompt_active = true;
+    password_dots = "";
+    i = 0;
+    while (i < bullets) {
+        password_dots += "*";
+        i++;
+    }
+    lock_image = Image("lock.png");
+    lock_sprite = Sprite(lock_image);
+    lock_sprite.SetX(Window.GetWidth() / 2 - lock_image.GetWidth() / 2);
+    lock_sprite.SetY(Window.GetHeight() * 0.5 - lock_image.GetHeight() / 2);
+    lock_sprite.SetZ(20);
+}
+Plymouth.SetDisplayPasswordFunction(display_password_callback);
+
+fun display_normal_callback() {
+    prompt_active = false;
+}
+Plymouth.SetDisplayNormalFunction(display_normal_callback);
+
+// ---- boot progress (kept subtle — no visible progress bar by design,
+// GRUB already showed one; Plymouth here is just the calm hand-off) ----
+fun boot_progress_callback(duration, progress) {
+    // Intentionally minimal: the snowflake loop is the whole indicator.
+}
+Plymouth.SetBootProgressFunction(boot_progress_callback);

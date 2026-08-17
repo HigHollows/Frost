@@ -1,0 +1,13 @@
+# FROST branding config — installed to /etc/frost/branding.conf
+# Edit this, then re-run `frost-motd-render.sh` (or just relogin — see
+# BRANDING.README.md for wiring it to /etc/profile.d or a systemd path
+# unit if you want it to pick up edits automatically).
+
+# Shown under the ASCII banner in /etc/motd.
+FROST_TAGLINE="minimalist Arch for full-stack devs"
+
+# Shown next to the banner ($ /usr/bin/frost --status output).
+FROST_VERSION="0.1.0"
+
+# The deliberately-fake error line. Set to "" to disable it entirely.
+FROST_FAKE_ERROR="System too cool to handle ❄"

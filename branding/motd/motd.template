@@ -1,0 +1,12 @@
+{{CYAN}} ███████╗██████╗  ██████╗ ███████╗████████╗{{RESET}}
+{{CYAN}} ██╔════╝██╔══██╗██╔═══██╗██╔════╝╚══██╔══╝{{RESET}}
+{{CYAN}} █████╗  ██████╔╝██║   ██║███████╗   ██║{{RESET}}
+{{CYAN}} ██╔══╝  ██╔══██╗██║   ██║╚════██║   ██║{{RESET}}
+{{CYAN}} ██║     ██║  ██║╚██████╔╝███████║   ██║{{RESET}}
+{{CYAN}} ╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚══════╝   ╚═╝{{RESET}}
+
+{{DIM}}$ {{RESET}}{{ICE}}/usr/bin/frost --status{{RESET}}
+FROST {{FROST_VERSION}} · {{FROST_TAGLINE}}
+
+{{DIM}}$ {{RESET}}{{RED}}ERROR: {{FROST_FAKE_ERROR}}{{RESET}}
+
