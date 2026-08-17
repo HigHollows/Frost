@@ -1,0 +1,719 @@
+<title>FROST OS Desktop</title>
+<style>
+/* ============================================================
+   FROST OS Desktop — visual mockup showcase
+   Single-theme by design: this page exists to show the FROST
+   Iceblue dark desktop itself, so it commits to that world
+   rather than adapting to the viewer's light/dark preference —
+   showing the OS mockup on a light page would undercut the thing
+   being shown. Background/colors are painted explicitly so it
+   holds on either host ground.
+   ============================================================ */
+
+:root {
+  --page-bg: #06090c;
+  --page-bg-2: #0a0f14;
+  --ink: #f0f4f8;
+  --ink-dim: #a8b8c8;
+  --ink-faint: #5b6b7d;
+
+  --os-bg: #0f1419;
+  --os-surface-1: #1a2332;
+  --os-surface-2: #243447;
+  --accent: #00d9ff;
+  --accent-2: #4da6ff;
+  --danger: #ff6b6b;
+  --success: #51cf66;
+
+  --line: rgba(240, 244, 248, 0.08);
+  --line-strong: rgba(240, 244, 248, 0.14);
+
+  --font-display: -apple-system, "Segoe UI Variable", "Segoe UI", Roboto, Ubuntu, sans-serif;
+  --font-body: -apple-system, "Segoe UI Variable", "Segoe UI", Roboto, Ubuntu, sans-serif;
+  --font-mono: "Cascadia Code", "Cascadia Mono", "JetBrains Mono", Consolas, "SF Mono", monospace;
+
+  --radius: 12px;
+  --shadow-panel: 0 8px 24px rgba(0,0,0,0.45);
+  --shadow-window: 0 20px 50px rgba(0,0,0,0.55);
+}
+
+* { box-sizing: border-box; }
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--page-bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+}
+
+body {
+  background:
+    radial-gradient(ellipse 900px 500px at 15% -10%, rgba(0,217,255,0.08), transparent 60%),
+    linear-gradient(180deg, var(--page-bg-2), var(--page-bg) 400px);
+}
+
+.wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 88px 32px 120px;
+}
+
+/* ---------- hero ---------- */
+
+.hero {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  margin-bottom: 96px;
+}
+
+.hero-mark {
+  width: 96px;
+  height: auto;
+  flex: none;
+  filter: drop-shadow(0 0 32px rgba(0,217,255,0.25));
+}
+
+.hero-text .eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 10px;
+}
+
+.hero-text h1 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(32px, 5vw, 52px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 0 0 14px;
+  text-wrap: balance;
+}
+
+.hero-text p {
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--ink-dim);
+  max-width: 56ch;
+  margin: 0;
+}
+
+.palette-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+
+.swatch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-faint);
+  background: var(--os-surface-1);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 5px 12px 5px 6px;
+}
+
+.swatch i {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: block;
+  border: 1px solid var(--line-strong);
+}
+
+/* ---------- section scaffolding ---------- */
+
+.section {
+  margin-bottom: 88px;
+}
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 14px;
+}
+
+.section-head .label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent-2);
+}
+
+.section-head h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 22px;
+  margin: 4px 0 0;
+  letter-spacing: -0.01em;
+}
+
+.section-head .real {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-faint);
+  text-align: right;
+  max-width: 32ch;
+  line-height: 1.5;
+}
+
+/* ---------- the OS "screen" frame ---------- */
+
+.screen {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--os-bg);
+  box-shadow: var(--shadow-window), inset 0 0 0 1px var(--line-strong);
+  aspect-ratio: 16 / 9.6;
+}
+
+.screen.short { aspect-ratio: 16 / 5.5; }
+
+.screen .wallpaper {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/png;base64,__WALLPAPER_B64__");
+  background-size: cover;
+  background-position: center;
+}
+
+/* top bar */
+
+.topbar {
+  position: relative;
+  z-index: 5;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  background: rgba(26,35,50,0.8);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  font-family: var(--font-body);
+  font-size: 12.5px;
+}
+
+.topbar-group { display: flex; align-items: center; gap: 14px; }
+.topbar-item { display: flex; align-items: center; gap: 6px; color: var(--ink); opacity: 0.92; }
+.topbar-item.muted { color: var(--ink-dim); }
+.topbar .brand { display:flex; align-items:center; gap:7px; font-weight:600; }
+.topbar .brand .dot { width:7px; height:7px; border-radius:50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+.topbar svg { display:block; }
+.badge {
+  background: var(--danger);
+  color: #0f1419;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  border-radius: 999px;
+  width: 14px; height: 14px;
+  display: flex; align-items: center; justify-content: center;
+  margin-left: -4px;
+}
+
+/* dock */
+
+.dock-wrap {
+  position: absolute;
+  left: 0; right: 0; bottom: 14px;
+  display: flex;
+  justify-content: center;
+  z-index: 5;
+}
+
+.dock {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 16px;
+  background: rgba(26,35,50,0.85);
+  box-shadow: var(--shadow-panel);
+}
+
+.dock-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--os-surface-2);
+  position: relative;
+  transition: transform 200ms ease, background 200ms ease;
+}
+.dock-icon.hot { background: rgba(0,217,255,0.16); transform: translateY(-4px) scale(1.06); }
+.dock-icon .run {
+  position: absolute; bottom: -7px; left: 50%; transform: translateX(-50%);
+  width: 4px; height: 4px; border-radius: 50%; background: var(--accent);
+}
+.dock-sep { width: 1px; align-self: stretch; background: var(--line-strong); margin: 4px 2px; }
+
+/* desktop icons hint */
+.desktop-labels {
+  position: absolute; top: 52px; left: 22px; z-index: 3;
+  display: flex; flex-direction: column; gap: 18px;
+}
+.dtop-icon { display:flex; flex-direction:column; align-items:center; gap:6px; width: 64px; }
+.dtop-icon .box { width: 36px; height: 36px; border-radius: 9px; background: rgba(26,35,50,0.55); display:flex; align-items:center; justify-content:center; }
+.dtop-icon span { font-size: 10.5px; color: var(--ink); text-shadow: 0 1px 3px rgba(0,0,0,0.6); }
+
+/* ---------- quick settings ---------- */
+
+.qs-panel {
+  position: absolute;
+  top: 40px; right: 14px;
+  width: 260px;
+  z-index: 8;
+  background: rgba(26,35,50,0.94);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-panel);
+  padding: 14px;
+}
+.qs-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; }
+.qs-toggle {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 10px;
+  border-radius: 10px;
+  background: var(--os-surface-2);
+  font-size: 12px;
+}
+.qs-toggle.on { background: var(--accent); color: var(--os-bg); font-weight: 600; }
+.qs-toggle svg { flex: none; }
+.qs-slider { margin-bottom: 10px; }
+.qs-slider .row { display:flex; justify-content:space-between; font-size:11px; color: var(--ink-dim); margin-bottom: 5px; font-family: var(--font-mono); }
+.qs-track { height: 5px; border-radius: 3px; background: var(--os-surface-2); overflow: hidden; }
+.qs-fill { height: 100%; background: linear-gradient(90deg, var(--accent-2), var(--accent)); }
+.qs-foot { display:flex; justify-content:space-between; align-items:center; padding-top: 10px; border-top: 1px solid var(--line); font-size: 11px; color: var(--ink-dim); }
+
+/* ---------- notification ---------- */
+
+.notif-stack { position: absolute; top: 40px; right: 14px; z-index: 8; display:flex; flex-direction:column; gap: 8px; width: 280px; }
+.notif {
+  background: rgba(26,35,50,0.95);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-panel);
+  padding: 12px 14px;
+  display: flex; gap: 10px;
+}
+.notif .icon { width: 30px; height: 30px; border-radius: 8px; background: rgba(0,217,255,0.14); display:flex; align-items:center; justify-content:center; flex: none; }
+.notif .body { flex: 1; min-width: 0; }
+.notif .body .t { font-size: 12.5px; font-weight: 600; margin-bottom: 2px; }
+.notif .body .d { font-size: 11.5px; color: var(--ink-dim); line-height: 1.4; }
+.notif .time { font-family: var(--font-mono); font-size: 10px; color: var(--ink-faint); flex:none; }
+
+/* ---------- window chrome (file manager / settings) ---------- */
+
+.window {
+  position: absolute; inset: 34px 40px 56px;
+  border-radius: var(--radius);
+  background: var(--os-surface-1);
+  box-shadow: var(--shadow-window);
+  border: 1px solid var(--line-strong);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.win-titlebar {
+  height: 30px; flex: none;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 12px;
+  background: var(--os-surface-1);
+  border-bottom: 1px solid var(--line);
+}
+.win-dots { display:flex; gap: 7px; }
+.win-dots span { width: 11px; height: 11px; border-radius: 50%; }
+.win-dots span:nth-child(1) { background: var(--danger); }
+.win-dots span:nth-child(2) { background: #ffd166; }
+.win-dots span:nth-child(3) { background: var(--success); }
+.win-title { font-size: 12px; color: var(--ink-dim); font-family: var(--font-mono); }
+.win-body { flex: 1; display: flex; min-height: 0; }
+
+/* file manager */
+.fm-sidebar { width: 168px; flex: none; background: rgba(15,20,25,0.4); border-right: 1px solid var(--line); padding: 12px 8px; }
+.fm-sidebar .h { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-faint); padding: 4px 8px 8px; }
+.fm-item { display:flex; align-items:center; gap:9px; padding: 7px 8px; border-radius: 8px; font-size: 12.5px; color: var(--ink-dim); }
+.fm-item.active { background: rgba(0,217,255,0.14); color: var(--ink); }
+.fm-main { flex: 1; padding: 16px 18px; overflow: hidden; }
+.fm-crumbs { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); margin-bottom: 16px; }
+.fm-crumbs b { color: var(--accent); font-weight: 500; }
+.fm-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+.fm-file { display:flex; flex-direction:column; align-items:center; gap:7px; }
+.fm-file .box { width: 48px; height: 48px; border-radius: 9px; display:flex; align-items:center; justify-content:center; }
+.fm-file span { font-size: 10.5px; color: var(--ink-dim); text-align:center; }
+
+/* settings panel */
+.st-sidebar { width: 176px; flex: none; background: rgba(15,20,25,0.4); border-right: 1px solid var(--line); padding: 12px 8px; }
+.st-main { flex: 1; padding: 22px 26px; }
+.st-main h3 { font-family: var(--font-display); font-size: 16px; margin: 0 0 18px; }
+.st-row { display:flex; align-items:center; justify-content:space-between; padding: 13px 0; border-bottom: 1px solid var(--line); }
+.st-row:last-child { border-bottom: none; }
+.st-row .l .t { font-size: 13px; margin-bottom: 2px; }
+.st-row .l .d { font-size: 11.5px; color: var(--ink-dim); }
+.st-swatches { display:flex; gap:8px; }
+.st-swatches i { width: 20px; height: 20px; border-radius: 50%; border: 2px solid transparent; display:block; cursor:pointer; }
+.st-swatches i.sel { border-color: var(--ink); }
+.st-toggle-pill { width: 38px; height: 22px; border-radius: 999px; background: var(--os-surface-2); position:relative; }
+.st-toggle-pill.on { background: var(--accent); }
+.st-toggle-pill::after { content:""; position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%; background:#fff; transition: left 200ms; }
+.st-toggle-pill.on::after { left: 18px; background: var(--os-bg); }
+
+/* terminal dropdown */
+.term-wrap { position:absolute; inset: 30px 0 0; z-index: 8; display:flex; justify-content:center; }
+.term {
+  width: 100%;
+  height: 68%;
+  background: rgba(15,20,25,0.97);
+  border-bottom-left-radius: var(--radius);
+  border-bottom-right-radius: var(--radius);
+  box-shadow: var(--shadow-panel);
+  padding: 14px 18px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.7;
+  border-top: 1px solid var(--line-strong);
+}
+.term .tabs { display:flex; gap: 14px; margin-bottom: 10px; font-size: 11px; }
+.term .tabs span { color: var(--ink-faint); padding-bottom: 6px; }
+.term .tabs span.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
+.term .ln { color: var(--ink-dim); }
+.term .ln .path { color: var(--accent-2); }
+.term .ln .ok { color: var(--success); }
+.term .cursor { display:inline-block; width: 7px; height: 14px; background: var(--accent); vertical-align: middle; box-shadow: 0 0 6px var(--accent); }
+
+/* caption row under each screen */
+.caption {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 14px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--ink-faint);
+}
+.caption .key { color: var(--ink-dim); }
+
+footer {
+  margin-top: 100px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-faint);
+}
+footer a { color: var(--accent-2); text-decoration: none; }
+
+@media (max-width: 720px) {
+  .hero { flex-direction: column; align-items: flex-start; }
+  .section-head { flex-direction: column; align-items: flex-start; }
+  .fm-grid { grid-template-columns: repeat(3, 1fr); }
+  footer { flex-direction: column; align-items: flex-start; gap: 8px; }
+}
+</style>
+
+<div class="wrap">
+
+  <div class="hero">
+    <img class="hero-mark" src="data:image/png;base64,__LOGO_B64__" alt="FROST crystal mark">
+    <div class="hero-text">
+      <p class="eyebrow">Visual mockups — not screenshots</p>
+      <h1>FROST OS Desktop</h1>
+      <p>GNOME Shell, re-skinned in FROST Iceblue: dark, minimalist, one accent. These are static mockups built to spec — see <b style="color:var(--ink)">DESKTOP.README.md</b> for what's real code, what's an existing extension being configured, and what still needs a real GNOME session to verify.</p>
+      <div class="palette-row">
+        <div class="swatch"><i style="background:#0f1419"></i>bg-dark</div>
+        <div class="swatch"><i style="background:#1a2332"></i>surface-1</div>
+        <div class="swatch"><i style="background:#243447"></i>surface-2</div>
+        <div class="swatch"><i style="background:#00d9ff"></i>accent</div>
+        <div class="swatch"><i style="background:#4da6ff"></i>accent-2</div>
+        <div class="swatch"><i style="background:#f0f4f8"></i>text</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1. Desktop idle -->
+  <section class="section">
+    <div class="section-head">
+      <div><div class="label">01 — Desktop idle state</div><h2>Wallpaper, top bar, dock</h2></div>
+      <div class="real">Wallpaper: real generated PNG (generate_wallpaper.py). Top bar + dock: GNOME panel + Dash to Dock, restyled.</div>
+    </div>
+    <div class="screen">
+      <div class="wallpaper"></div>
+      <div class="topbar">
+        <div class="topbar-group">
+          <div class="brand"><span class="dot"></span>Files</div>
+        </div>
+        <div class="topbar-group topbar-item">Wed 14:32</div>
+        <div class="topbar-group">
+          <div class="topbar-item muted">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 8.5a16 16 0 0 1 20 0"/><path d="M5.5 12a11 11 0 0 1 13 0"/><path d="M9 15.5a6 6 0 0 1 6 0"/><circle cx="12" cy="19" r="1" fill="currentColor" stroke="none"/></svg>
+          </div>
+          <div class="topbar-item muted">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="18" height="10" rx="2"/><path d="M22 10v4" stroke-width="2"/></svg>
+            84%
+          </div>
+          <div class="topbar-item" style="position:relative">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+            <span class="badge">3</span>
+          </div>
+        </div>
+      </div>
+      <div class="desktop-labels">
+        <div class="dtop-icon"><div class="box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00d9ff" stroke-width="2"><path d="M3 7l3-4h5l2 3h8v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7z"/></svg></div><span>Projects</span></div>
+        <div class="dtop-icon"><div class="box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f0f4f8" stroke-width="2"><path d="M14 3v5h5"/><path d="M6 3h8l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/></svg></div><span>Notes.txt</span></div>
+      </div>
+      <div class="dock-wrap">
+        <div class="dock">
+          <div class="dock-icon hot"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00d9ff" stroke-width="2"><path d="M3 7l3-4h5l2 3h8v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7z"/></svg><span class="run"></span></div>
+          <div class="dock-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f0f4f8" stroke-width="2"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18M8 4v14"/></svg></div>
+          <div class="dock-icon hot"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00d9ff" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11"/></svg><span class="run"></span></div>
+          <div class="dock-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f0f4f8" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18"/></svg></div>
+          <div class="dock-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f0f4f8" stroke-width="2"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M8 3l4 3l4-3"/></svg></div>
+          <div class="dock-sep"></div>
+          <div class="dock-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a8b8c8" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h11"/></svg></div>
+        </div>
+      </div>
+    </div>
+    <div class="caption"><span><span class="key">01</span> Desktop idle</span><span>Inter/system-UI · JetBrains Mono for labels</span></div>
+  </section>
+
+  <!-- 2. Top bar + dock detail -->
+  <section class="section">
+    <div class="section-head">
+      <div><div class="label">02 — Chrome detail</div><h2>Top bar + dock, close up</h2></div>
+      <div class="real">32px panel height, 48px dock icons, cyan running-indicator dot — matches spec section IV exactly.</div>
+    </div>
+    <div class="screen short">
+      <div class="wallpaper"></div>
+      <div class="topbar">
+        <div class="topbar-group"><div class="brand"><span class="dot"></span>Terminal</div></div>
+        <div class="topbar-group topbar-item">Wed 14:32</div>
+        <div class="topbar-group">
+          <div class="topbar-item muted"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 8.5a16 16 0 0 1 20 0"/><path d="M5.5 12a11 11 0 0 1 13 0"/><path d="M9 15.5a6 6 0 0 1 6 0"/><circle cx="12" cy="19" r="1" fill="currentColor" stroke="none"/></svg></div>
+          <div class="topbar-item muted"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="18" height="10" rx="2"/><path d="M22 10v4"/></svg>84%</div>
+          <div class="topbar-item" style="position:relative"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="badge">3</span></div>
+        </div>
+      </div>
+      <div class="dock-wrap">
+        <div class="dock">
+          <div class="dock-icon hot"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00d9ff" stroke-width="2"><path d="M3 7l3-4h5l2 3h8v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7z"/></svg><span class="run"></span></div>
+          <div class="dock-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f0f4f8" stroke-width="2"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18M8 4v14"/></svg></div>
+          <div class="dock-icon hot"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00d9ff" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11"/></svg><span class="run"></span></div>
+          <div class="dock-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f0f4f8" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18"/></svg></div>
+          <div class="dock-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f0f4f8" stroke-width="2"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M8 3l4 3l4-3"/></svg></div>
+          <div class="dock-sep"></div>
+          <div class="dock-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a8b8c8" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h11"/></svg></div>
+        </div>
+      </div>
+    </div>
+    <div class="caption"><span><span class="key">02</span> Chrome detail</span><span>Dash to Dock, restyled — not reimplemented</span></div>
+  </section>
+
+  <!-- 3. Quick settings -->
+  <section class="section">
+    <div class="section-head">
+      <div><div class="label">03 — Quick settings</div><h2>Slide-out panel, open</h2></div>
+      <div class="real">GNOME's native Quick Settings (built in since 43) — the 2×4 toggle grid already exists; this only restyles it.</div>
+    </div>
+    <div class="screen">
+      <div class="wallpaper"></div>
+      <div class="topbar">
+        <div class="topbar-group"><div class="brand"><span class="dot"></span>Activities</div></div>
+        <div class="topbar-group topbar-item">Wed 14:32</div>
+        <div class="topbar-group">
+          <div class="topbar-item muted"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 8.5a16 16 0 0 1 20 0"/><path d="M5.5 12a11 11 0 0 1 13 0"/><path d="M9 15.5a6 6 0 0 1 6 0"/><circle cx="12" cy="19" r="1" fill="currentColor" stroke="none"/></svg></div>
+          <div class="topbar-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00d9ff" stroke-width="2"><rect x="2" y="7" width="18" height="10" rx="2"/><path d="M22 10v4"/></svg>84%</div>
+        </div>
+      </div>
+      <div class="qs-panel">
+        <div class="qs-grid">
+          <div class="qs-toggle on"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 8.5a16 16 0 0 1 20 0"/><path d="M5.5 12a11 11 0 0 1 13 0"/><path d="M9 15.5a6 6 0 0 1 6 0"/></svg>Wi-Fi</div>
+          <div class="qs-toggle on"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 7l10 10-5 5V2l5 5L7 17"/></svg>Bluetooth</div>
+          <div class="qs-toggle"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>Do Not Disturb</div>
+          <div class="qs-toggle on"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>Dark Mode</div>
+          <div class="qs-toggle"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>Power Saver</div>
+          <div class="qs-toggle on"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 9l3 3-3 3M13 15h3"/></svg>Steam Mode</div>
+        </div>
+        <div class="qs-slider">
+          <div class="row"><span>Brightness</span><span>72%</span></div>
+          <div class="qs-track"><div class="qs-fill" style="width:72%"></div></div>
+        </div>
+        <div class="qs-slider">
+          <div class="row"><span>Volume</span><span>58%</span></div>
+          <div class="qs-track"><div class="qs-fill" style="width:58%"></div></div>
+        </div>
+        <div class="qs-foot"><span>you@frost</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></div>
+      </div>
+    </div>
+    <div class="caption"><span><span class="key">03</span> Quick settings</span><span>Steam Mode toggle = frost-shell extension's contribution</span></div>
+  </section>
+
+  <!-- 4. File manager -->
+  <section class="section">
+    <div class="section-head">
+      <div><div class="label">04 — File manager</div><h2>Nautilus, FROST-themed</h2></div>
+      <div class="real">GTK4/Libadwaita-native already — themed via gtk.css's accent color + card/sidebar tokens.</div>
+    </div>
+    <div class="screen">
+      <div class="wallpaper"></div>
+      <div class="topbar">
+        <div class="topbar-group"><div class="brand"><span class="dot"></span>Files</div></div>
+        <div class="topbar-group topbar-item">Wed 14:32</div>
+        <div class="topbar-group"><div class="topbar-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00d9ff" stroke-width="2"><rect x="2" y="7" width="18" height="10" rx="2"/><path d="M22 10v4"/></svg>84%</div></div>
+      </div>
+      <div class="window" style="inset: 34px 24px 34px;">
+        <div class="win-titlebar"><div class="win-dots"><span></span><span></span><span></span></div><div class="win-title">Files</div><div style="width:44px"></div></div>
+        <div class="win-body">
+          <div class="fm-sidebar">
+            <div class="h">Favorites</div>
+            <div class="fm-item active"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7M5 10v10h14V10"/></svg>Home</div>
+            <div class="fm-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/></svg>Desktop</div>
+            <div class="fm-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v3h16v-3"/></svg>Downloads</div>
+            <div class="fm-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3v5h5"/><path d="M6 3h8l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/></svg>Documents</div>
+          </div>
+          <div class="fm-main">
+            <div class="fm-crumbs"><b>Home</b> / Projects / frost</div>
+            <div class="fm-grid">
+              <div class="fm-file"><div class="box" style="background:rgba(0,217,255,0.14)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00d9ff" stroke-width="2"><path d="M3 7l3-4h5l2 3h8v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7z"/></svg></div><span>branding</span></div>
+              <div class="fm-file"><div class="box" style="background:rgba(0,217,255,0.14)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00d9ff" stroke-width="2"><path d="M3 7l3-4h5l2 3h8v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7z"/></svg></div><span>desktop</span></div>
+              <div class="fm-file"><div class="box" style="background:var(--os-surface-2)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f0f4f8" stroke-width="2"><path d="M14 3v5h5"/><path d="M6 3h8l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/></svg></div><span>README.md</span></div>
+              <div class="fm-file"><div class="box" style="background:var(--os-surface-2)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#51cf66" stroke-width="2"><path d="M14 3v5h5"/><path d="M6 3h8l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 13l2 2 4-4"/></svg></div><span>frost-deploy.sh</span></div>
+              <div class="fm-file"><div class="box" style="background:var(--os-surface-2)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f0f4f8" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div><span>wallpaper.png</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="caption"><span><span class="key">04</span> File manager</span><span>Sidebar · grid view · breadcrumb</span></div>
+  </section>
+
+  <!-- 5. Notification -->
+  <section class="section">
+    <div class="section-head">
+      <div><div class="label">05 — Notification</div><h2>Stacked, top-right</h2></div>
+      <div class="real">GNOME's built-in banners, restyled (stylesheet.css's .notification-banner rules).</div>
+    </div>
+    <div class="screen">
+      <div class="wallpaper"></div>
+      <div class="topbar">
+        <div class="topbar-group"><div class="brand"><span class="dot"></span>Desktop</div></div>
+        <div class="topbar-group topbar-item">Wed 14:32</div>
+        <div class="topbar-group"><div class="topbar-item muted"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="18" height="10" rx="2"/><path d="M22 10v4"/></svg>84%</div></div>
+      </div>
+      <div class="notif-stack">
+        <div class="notif">
+          <div class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00d9ff" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+          <div class="body"><div class="t">FROST updates available</div><div class="d">3 update(s) pending (2 official, 1 AUR)</div></div>
+          <div class="time">now</div>
+        </div>
+        <div class="notif">
+          <div class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#51cf66" stroke-width="2"><path d="M9 12l2 2 4-4M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg></div>
+          <div class="body"><div class="t">Security audit clean</div><div class="d">firewall active · fail2ban running · 0 issues</div></div>
+          <div class="time">2m</div>
+        </div>
+        <div class="notif" style="opacity:.6">
+          <div class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a8b8c8" stroke-width="2"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M12 8v4l3 3"/></svg></div>
+          <div class="body"><div class="t">Build finished</div><div class="d">frost-deploy.sh · 7/7 phases · 14m 02s</div></div>
+          <div class="time">9m</div>
+        </div>
+      </div>
+    </div>
+    <div class="caption"><span><span class="key">05</span> Notifications</span><span>Slide-in, newest on top, auto-dismiss 4s</span></div>
+  </section>
+
+  <!-- 6. Terminal dropdown -->
+  <section class="section">
+    <div class="section-head">
+      <div><div class="label">06 — Terminal dropdown</div><h2>Guake, Ctrl+Alt+T</h2></div>
+      <div class="real">Real app (Guake), configured via dconf — not a custom terminal emulator.</div>
+    </div>
+    <div class="screen">
+      <div class="wallpaper"></div>
+      <div class="term-wrap">
+        <div class="term">
+          <div class="tabs"><span class="active">1: zsh</span><span>2: zsh</span><span style="color:var(--accent)">+</span></div>
+          <div class="ln"><span class="path">you@frost</span> <span style="color:var(--ink-faint)">~/frost</span> $ ./frost-deploy.sh --target /mnt --resume</div>
+          <div class="ln" style="color:var(--ink-faint)">[frost] Resume mode: phases already checkpointed OK will be skipped.</div>
+          <div class="ln"><span class="ok">[ ok ]</span> Phase 3: Users &amp; bootloader complete</div>
+          <div class="ln">[████████████████░░░░]  85% (6/7) ❄️  Gaming &amp; Dev Stack pack</div>
+          <div class="ln"><span class="path">you@frost</span> <span style="color:var(--ink-faint)">~/frost</span> $ <span class="cursor"></span></div>
+        </div>
+      </div>
+    </div>
+    <div class="caption"><span><span class="key">06</span> Terminal dropdown</span><span>70% height · 95% opacity · JetBrains Mono 13px</span></div>
+  </section>
+
+  <!-- 7. Settings panel -->
+  <section class="section">
+    <div class="section-head">
+      <div><div class="label">07 — Settings</div><h2>GNOME Control Center</h2></div>
+      <div class="real">gnome-control-center, themed — appearance panel shown as the representative screen.</div>
+    </div>
+    <div class="screen">
+      <div class="wallpaper"></div>
+      <div class="topbar">
+        <div class="topbar-group"><div class="brand"><span class="dot"></span>Settings</div></div>
+        <div class="topbar-group topbar-item">Wed 14:32</div>
+        <div class="topbar-group"><div class="topbar-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00d9ff" stroke-width="2"><rect x="2" y="7" width="18" height="10" rx="2"/><path d="M22 10v4"/></svg>84%</div></div>
+      </div>
+      <div class="window" style="inset: 34px 24px 34px;">
+        <div class="win-titlebar"><div class="win-dots"><span></span><span></span><span></span></div><div class="win-title">Settings</div><div style="width:44px"></div></div>
+        <div class="win-body">
+          <div class="st-sidebar">
+            <div class="h">System</div>
+            <div class="fm-item active"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/></svg>Appearance</div>
+            <div class="fm-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 8.5a16 16 0 0 1 20 0"/><path d="M5.5 12a11 11 0 0 1 13 0"/></svg>Network</div>
+            <div class="fm-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/></svg>Notifications</div>
+            <div class="fm-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/></svg>Users</div>
+          </div>
+          <div class="st-main">
+            <h3>Appearance</h3>
+            <div class="st-row">
+              <div class="l"><div class="t">Style</div><div class="d">FROST Iceblue — dark</div></div>
+              <div class="st-swatches"><i style="background:#0f1419" class="sel"></i><i style="background:#f0f4f8"></i></div>
+            </div>
+            <div class="st-row">
+              <div class="l"><div class="t">Accent color</div><div class="d">Closest system preset to #00d9ff</div></div>
+              <div class="st-swatches"><i style="background:#00d9ff" class="sel"></i><i style="background:#4da6ff"></i><i style="background:#51cf66"></i><i style="background:#ff6b6b"></i></div>
+            </div>
+            <div class="st-row">
+              <div class="l"><div class="t">Reduce animations</div><div class="d">org.gnome.desktop.interface enable-animations</div></div>
+              <div class="st-toggle-pill"></div>
+            </div>
+            <div class="st-row">
+              <div class="l"><div class="t">Dock autohide</div><div class="d">Dash to Dock</div></div>
+              <div class="st-toggle-pill on"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="caption"><span><span class="key">07</span> Settings</span><span>Contrast: text ~17:1 · secondary ~8.6:1 (AA/AAA)</span></div>
+  </section>
+
+  <footer>
+    <span>FROST OS Desktop — GNOME Shell + FROST Iceblue theme</span>
+    <span>See <a href="#">DESKTOP.README.md</a> for scope, verification status, and install steps</span>
+  </footer>
+
+</div>

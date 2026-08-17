@@ -75,6 +75,7 @@ Full flag reference and design notes for each phase:
 - [SECURITY.README.md](SECURITY.README.md) — Security & Hacking Tools pack: pentest toolkit, firewall, VPN, SSH hardening
 - [GAMING.README.md](GAMING.README.md) — Gaming & Dev Stack pack: Steam/Lutris/Heroic, languages/DBs/IDEs, performance tuning, `frost --mode`
 - [DEPLOY.README.md](DEPLOY.README.md) — Deployment & Auto-Update pack: master orchestrator, systemd timers, config, uninstall
+- [DESKTOP.README.md](DESKTOP.README.md) — FROST OS Desktop: GNOME Shell + FROST Iceblue theme, honest scope notes
 
 ## Requirements
 
@@ -96,6 +97,7 @@ frost-deploy.sh                    Master orchestrator — chains all six script
 frost-update.sh                     Update checker/applier (installed to /opt/frost/bin by deploy)
 frost-status.sh                      Health check / monitor daemon
 frost-uninstall.sh                    Clean removal
+frost-desktop.sh                        FROST OS Desktop — GNOME Shell + Iceblue theme (optional, alternative to Phase 3's i3 profile)
 frost-build.README.md         Phase 1 docs
 frost-phase2.README.md        Phase 2 docs
 frost-phase3.README.md        Phase 3 docs
@@ -103,9 +105,11 @@ BRANDING.README.md             Boot & Aesthetic pack docs
 SECURITY.README.md              Security & Hacking Tools pack docs
 GAMING.README.md                 Gaming & Dev Stack pack docs
 DEPLOY.README.md                  Deployment & Auto-Update pack docs
+DESKTOP.README.md                   FROST OS Desktop docs
 branding/                        GRUB/Plymouth/MOTD/zsh assets + generator (see BRANDING.README.md)
 security/                         VPN/SSH/fail2ban config templates (see SECURITY.README.md)
 deploy/                            lib/systemd units/config template (see DEPLOY.README.md)
+desktop/                             GTK4 theme/GNOME extension/wallpaper + generators (see DESKTOP.README.md)
 ARCHITECTURE.md                Design notes, safety model, lessons from real testing
 ROADMAP.md                      Where FROST is headed
 CONTRIBUTING.md                  Commit convention, code conventions

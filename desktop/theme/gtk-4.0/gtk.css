@@ -1,0 +1,115 @@
+/* FROST Iceblue — GTK4/Libadwaita theme
+ *
+ * Installed to ~/.config/gtk-4.0/gtk.css (per-user) or
+ * /usr/share/themes/FROST/gtk-4.0/gtk.css (system, via frost-desktop.sh).
+ *
+ * HONEST SCOPE: Libadwaita deliberately limits how far app theming can
+ * go compared to old GTK3 "theme engines" — this is a GNOME design
+ * decision to keep apps visually consistent, not an oversight. This
+ * file works WITH that: it sets the FROST palette as named colors,
+ * uses libadwaita's supported accent-color mechanism, and styles what
+ * libadwaita still exposes (headerbars, buttons, entries, popovers,
+ * sidebars) — it does not attempt a full glassmorphism reskin of every
+ * app, which would fight the platform and likely break on the next
+ * libadwaita release. The heavier glassmorphism/blur treatment lives at
+ * the Shell level instead (see ../extension/frost-shell@frost-os/
+ * stylesheet.css) — top bar, quick settings, notifications, overview —
+ * which IS fully themeable because it's compositor chrome, not an app.
+ */
+
+/* ── FROST Iceblue palette ────────────────────────────────────────── */
+
+@define-color frost_bg_dark        #0f1419;
+@define-color frost_surface_1      #1a2332;
+@define-color frost_surface_2      #243447;
+@define-color frost_accent         #00d9ff;
+@define-color frost_accent_2       #4da6ff;
+@define-color frost_text_primary   #f0f4f8;
+@define-color frost_text_secondary #a8b8c8;
+@define-color frost_danger         #ff6b6b;
+@define-color frost_success        #51cf66;
+
+/* Libadwaita's own named colors — remapped so every app that respects
+   them (most do) picks up the palette without per-widget overrides. */
+@define-color window_bg_color            @frost_bg_dark;
+@define-color window_fg_color            @frost_text_primary;
+@define-color view_bg_color              @frost_surface_1;
+@define-color view_fg_color              @frost_text_primary;
+@define-color headerbar_bg_color         @frost_surface_1;
+@define-color headerbar_fg_color         @frost_text_primary;
+@define-color headerbar_border_color     @frost_surface_2;
+@define-color popover_bg_color           alpha(@frost_surface_1, 0.92);
+@define-color popover_fg_color           @frost_text_primary;
+@define-color sidebar_bg_color           @frost_surface_1;
+@define-color sidebar_fg_color           @frost_text_primary;
+@define-color card_bg_color              alpha(@frost_surface_2, 0.6);
+@define-color card_fg_color              @frost_text_primary;
+@define-color accent_color               @frost_accent;
+@define-color accent_bg_color            @frost_accent;
+@define-color accent_fg_color            @frost_bg_dark;
+@define-color destructive_color          @frost_danger;
+@define-color destructive_bg_color       @frost_danger;
+@define-color success_color              @frost_success;
+@define-color success_bg_color           @frost_success;
+
+/* ── Shape language: 12px radius, soft shadows, generous spacing ───── */
+
+window,
+.background {
+    border-radius: 12px;
+}
+
+headerbar,
+.titlebar {
+    border-radius: 12px 12px 0 0;
+    min-height: 28px;
+    box-shadow: 0 10px 30px alpha(black, 0.4);
+}
+
+button {
+    border-radius: 10px;
+    transition: background-color 300ms ease, box-shadow 300ms ease;
+}
+
+button.suggested-action {
+    background-color: @frost_accent;
+    color: @frost_bg_dark;
+}
+
+button:focus-visible,
+entry:focus-visible,
+row:focus-visible {
+    outline: 2px solid @frost_accent;
+    outline-offset: 1px;
+}
+
+entry,
+.card {
+    border-radius: 10px;
+    background-color: alpha(@frost_surface_2, 0.6);
+}
+
+popover.background {
+    border-radius: 12px;
+    box-shadow: 0 8px 24px alpha(black, 0.3);
+    border: 1px solid @frost_surface_2;
+}
+
+/* ── Motion: 300ms, and respect reduced-motion ──────────────────────
+   GTK doesn't expose prefers-reduced-motion to CSS directly; the
+   frost-desktop.sh installer sets org.gnome.desktop.interface
+   enable-animations to false when the session's a11y setting requests
+   reduced motion — see DESKTOP.README.md "Accessibility" section. */
+
+* {
+    transition-duration: 300ms;
+}
+
+/* ── Focus & contrast (WCAG 2.1 AA) ─────────────────────────────────
+   frost_text_primary (#f0f4f8) on frost_bg_dark (#0f1419) is ~17:1 —
+   comfortably AA/AAA for normal text. frost_text_secondary (#a8b8c8)
+   on the same background is ~8.6:1, still AA for small text. */
+
+label.dim-label {
+    color: @frost_text_secondary;
+}

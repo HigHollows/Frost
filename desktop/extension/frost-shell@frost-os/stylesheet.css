@@ -1,0 +1,152 @@
+/* FROST Shell stylesheet — compositor-level chrome (top bar, quick
+ * settings, notifications, overview). This is where the glassmorphism
+ * treatment from the spec actually belongs: it's compositor UI, not an
+ * app, so GNOME Shell's St CSS gives real control over it.
+ *
+ * IMPORTANT — blur is NOT a CSS property here: St (Shell Toolkit) CSS
+ * does not support `backdrop-filter` the way browser CSS does. What
+ * you see below (alpha-transparent backgrounds) gives the "frosted
+ * glass" color/tone but not true Gaussian blur. For genuine backdrop
+ * blur, depend on the well-established "Blur my Shell" extension
+ * (real GL-based Clutter/Mutter blur effect) configured to target
+ * #panel and .quick-settings — frost-desktop.sh installs and
+ * pre-configures it rather than reimplementing GL blur here.
+ *
+ * UNVERIFIED: class names below (#panel, .quick-settings, .quick-toggle,
+ * .notification-banner, .overview, .search-entry) match GNOME Shell's
+ * actual stylesheet as of GNOME 45-47 to the best of available
+ * knowledge, but this has not been loaded into a real gnome-shell
+ * process. Check against your GNOME version's own
+ * /usr/share/gnome-shell/theme/gnome-shell.css if something doesn't
+ * apply — see DESKTOP.README.md.
+ */
+
+/* ── Palette (kept in sync with the GTK4 theme) ─────────────────────── */
+
+stage {
+    -frost-bg-dark: #0f1419;
+    -frost-surface-1: #1a2332;
+    -frost-surface-2: #243447;
+    -frost-accent: #00d9ff;
+    -frost-accent-2: #4da6ff;
+    -frost-text-primary: #f0f4f8;
+    -frost-text-secondary: #a8b8c8;
+    -frost-danger: #ff6b6b;
+    -frost-success: #51cf66;
+}
+
+/* ── Top bar ─────────────────────────────────────────────────────────
+ * 32px height, semi-transparent surface — pairs with Blur my Shell for
+ * the actual blur; this handles color/tone/shadow. */
+
+#panel {
+    background-color: rgba(26, 35, 50, 0.8); /* frost-surface-1 @ 80% */
+    height: 32px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+#panel .panel-button {
+    color: #f0f4f8;
+    -natural-hpadding: 12px;
+    transition-duration: 300ms;
+}
+
+#panel .panel-button:hover,
+#panel .panel-button:focus {
+    background-color: rgba(0, 217, 255, 0.12); /* frost-accent @ 12% */
+    border-radius: 8px;
+}
+
+#panel .panel-button:active,
+#panel .panel-button:checked {
+    background-color: rgba(0, 217, 255, 0.2);
+    border-radius: 8px;
+}
+
+.frost-panel-icon {
+    color: #00d9ff;
+    icon-size: 16px;
+}
+
+/* ── Quick Settings panel ───────────────────────────────────────────
+ * GNOME's native Quick Settings (43+) already covers the 2x4 toggle
+ * grid, brightness/volume sliders, and slide-out-from-top-right
+ * behavior the spec asks for — this just re-skins it, not rebuilds it. */
+
+.quick-settings {
+    background-color: rgba(26, 35, 50, 0.92);
+    border: 1px solid rgba(36, 52, 71, 0.8);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.quick-toggle,
+.icon-button {
+    border-radius: 10px;
+    transition-duration: 300ms;
+}
+
+.quick-toggle:checked {
+    background-color: #00d9ff;
+    color: #0f1419;
+}
+
+.quick-toggle:hover {
+    background-color: rgba(0, 217, 255, 0.15);
+}
+
+.quick-slider slider {
+    color: #00d9ff;
+}
+
+/* ── Notifications ────────────────────────────────────────────────── */
+
+.notification-banner {
+    background-color: rgba(26, 35, 50, 0.95);
+    border: 1px solid rgba(36, 52, 71, 0.8);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    color: #f0f4f8;
+    transition-duration: 200ms;
+}
+
+.notification-banner .notification-icon {
+    color: #00d9ff;
+}
+
+/* ── Overview / launcher (Super key) ────────────────────────────────
+ * GNOME's Activities overview IS the app/file/command launcher the
+ * spec describes ("Spotlight-style") — themed here, not rebuilt. */
+
+.overview {
+    background-color: rgba(15, 20, 25, 0.6);
+}
+
+.search-entry {
+    background-color: rgba(36, 52, 71, 0.6);
+    border-radius: 10px;
+    color: #f0f4f8;
+    transition-duration: 300ms;
+}
+
+.search-entry:focus {
+    border: 2px solid #00d9ff;
+}
+
+/* ── Dash (if not using Dash to Dock) ────────────────────────────────
+ * frost-desktop.sh configures Dash to Dock by default, which has its
+ * own theming surface (dash-to-dock's own settings + its own CSS
+ * classes, e.g. #dashtodockContainer) — these rules only apply to
+ * GNOME's built-in dash, kept here as a fallback for anyone who
+ * disables Dash to Dock. */
+
+.dash {
+    background-color: rgba(26, 35, 50, 0.85);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.dash-item-container .app-well-app:hover {
+    background-color: rgba(0, 217, 255, 0.12);
+    border-radius: 10px;
+}

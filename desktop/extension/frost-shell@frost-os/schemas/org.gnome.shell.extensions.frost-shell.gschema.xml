@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.frost-shell" path="/org/gnome/shell/extensions/frost-shell/">
+    <key name="easter-egg-keybinding" type="as">
+      <default>['&lt;Control&gt;&lt;Super&gt;e']</default>
+      <summary>Reveal the FROST easter egg</summary>
+      <description>Hidden keybinding — shows a random FROST easter-egg message via a desktop notification.</description>
+    </key>
+  </schema>
+</schemalist>
