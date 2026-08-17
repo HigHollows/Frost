@@ -60,6 +60,7 @@ Full flag reference and design notes for each phase:
 - [frost-phase3.README.md](frost-phase3.README.md) — Phase 3: users, profiles, ISO packaging
 - [BRANDING.README.md](BRANDING.README.md) — Boot & Aesthetic pack: GRUB theme, Plymouth splash, MOTD, zsh
 - [SECURITY.README.md](SECURITY.README.md) — Security & Hacking Tools pack: pentest toolkit, firewall, VPN, SSH hardening
+- [GAMING.README.md](GAMING.README.md) — Gaming & Dev Stack pack: Steam/Lutris/Heroic, languages/DBs/IDEs, performance tuning, `frost --mode`
 
 ## Requirements
 
@@ -76,11 +77,13 @@ frost-phase2.sh              Phase 2 script
 frost-phase3.sh              Phase 3 script
 frost-branding.sh             Boot & Aesthetic pack (optional, run after Phase 3)
 frost-security.sh              Security & Hacking Tools pack (optional, run after Phase 2/3)
+frost-gaming.sh                  Gaming & Dev Stack pack (optional, run after Phase 2/3)
 frost-build.README.md         Phase 1 docs
 frost-phase2.README.md        Phase 2 docs
 frost-phase3.README.md        Phase 3 docs
 BRANDING.README.md             Boot & Aesthetic pack docs
 SECURITY.README.md              Security & Hacking Tools pack docs
+GAMING.README.md                 Gaming & Dev Stack pack docs
 branding/                        GRUB/Plymouth/MOTD/zsh assets + generator (see BRANDING.README.md)
 security/                         VPN/SSH/fail2ban config templates (see SECURITY.README.md)
 ARCHITECTURE.md                Design notes, safety model, lessons from real testing
