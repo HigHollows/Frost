@@ -1,0 +1,22 @@
+# FROST WireGuard client template.
+#
+# This is a TEMPLATE, not a working config — frost-security.sh will
+# refuse to enable auto-connect against a file that still contains any
+# <PLACEHOLDER> below. Fill it in, save it as /etc/wireguard/frost-wg0.conf
+# (drop the .template suffix), then:
+#
+#   sudo systemctl enable --now wg-quick@frost-wg0.service
+#
+# Generate your own keypair, never reuse this file's (there isn't one):
+#   wg genkey | tee privatekey | wg pubkey > publickey
+
+[Interface]
+PrivateKey = <YOUR_PRIVATE_KEY_HERE>
+Address = <YOUR_TUNNEL_IP_HERE>/32
+DNS = 1.1.1.1
+
+[Peer]
+PublicKey = <SERVER_PUBLIC_KEY_HERE>
+Endpoint = <SERVER_HOST_HERE>:51820
+AllowedIPs = 0.0.0.0/0, ::/0
+PersistentKeepalive = 25

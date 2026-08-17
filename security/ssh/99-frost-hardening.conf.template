@@ -1,0 +1,19 @@
+# FROST SSH hardening drop-in — installed to /etc/ssh/sshd_config.d/99-frost-hardening.conf
+# (Arch's sshd_config `Include /etc/ssh/sshd_config.d/*.conf` picks this up automatically.)
+#
+# frost-security.sh deploys this from the template below, but FLIPS
+# PasswordAuthentication back to "yes" automatically if the target user
+# has no ~/.ssh/authorized_keys — shipping "no" unconditionally would
+# risk locking you out of a box with no other access method. Check the
+# script's own log output to see which case applied.
+
+PermitRootLogin no
+PasswordAuthentication no
+PubkeyAuthentication yes
+AuthenticationMethods publickey
+MaxAuthTries 3
+X11Forwarding no
+AllowTcpForwarding no
+ClientAliveInterval 300
+ClientAliveCountMax 2
+LoginGraceTime 20

@@ -1,0 +1,30 @@
+# FROST OpenVPN client template.
+#
+# TEMPLATE — frost-security.sh checks for <PLACEHOLDER> markers before
+# enabling auto-connect. Get the real client config + certs from your
+# VPN provider/server admin; this file only exists to show the expected
+# shape and to give the systemd unit something named to enable.
+#
+# Install as /etc/openvpn/client/frost-client.conf (drop .ovpn.template,
+# OpenVPN's client@ unit expects /etc/openvpn/client/<name>.conf), then:
+#
+#   sudo systemctl enable --now openvpn-client@frost-client.service
+
+client
+dev tun
+proto udp
+remote <SERVER_HOST_HERE> 1194
+resolv-retry infinite
+nobind
+persist-key
+persist-tun
+remote-cert-tls server
+cipher AES-256-GCM
+auth SHA256
+verb 3
+
+# Paste your provider's certs/keys below, or reference external files:
+# <ca> ... </ca>
+# <cert> ... </cert>
+# <key> ... </key>
+# <tls-auth> ... </tls-auth>

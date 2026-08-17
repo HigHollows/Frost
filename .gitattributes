@@ -19,4 +19,6 @@ LICENSE text eol=lf
 *.template text eol=lf
 *.zshrc text eol=lf
 *.example text eol=lf
+*.local text eol=lf
+*.ovpn text eol=lf
 *.png binary

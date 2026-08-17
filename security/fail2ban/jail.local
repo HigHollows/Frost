@@ -1,0 +1,16 @@
+# FROST fail2ban config — installed to /etc/fail2ban/jail.local
+# (jail.local overrides jail.conf without editing the package-owned file,
+# so pacman updates to fail2ban never clobber this.)
+
+[DEFAULT]
+bantime  = 1h
+findtime = 10m
+maxretry = 5
+backend  = systemd
+
+[sshd]
+enabled = true
+port    = ssh
+filter  = sshd
+maxretry = 4
+bantime  = 2h
