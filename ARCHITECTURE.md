@@ -98,6 +98,18 @@ Confirmed with a 5-line reproduction before trusting the diagnosis (see the comm
 
 **Fix:** never write a validation guard as a function's sole statement in `&&` form. Use `if`/`fi` instead — `if [[ cond ]]; then action; fi` returns 0 regardless of whether the branch ran, so it can't invert a function's return value this way. `frost-branding.sh` and `frost-gaming.sh`'s `check_root()` were rewritten this way (matching what `frost-build.sh`/`frost-phase2.sh`/`frost-phase3.sh` already did — this bug was specific to the later scripts that had compacted the idiom for brevity).
 
+### Lesson 5: `/var/log/frost` needs to be writable by more than root
+
+Found running `frost-status` as the regular sudo user right after a full `frost-deploy.sh` run: `Permission denied` writing `/var/log/frost/status.log.tmp`.
+
+`frost-deploy.sh` creates `/var/log/frost/` (for `frost.log`, `deploy-checkpoint.state`, `status.log`, `security-audit.log`) as root, with the default `mkdir -p` mode — effectively `0755` owned by `root:root`. That's fine for `frost-daemon.service` (runs as root) but locks out the exact use case `frost-status` is meant for: a regular admin user checking system health without needing `sudo` for something that isn't sensitive.
+
+**Fix:** `/var/log/frost` is created `1777` (world-writable, sticky bit — the same shape as `/tmp`) by `frost-deploy.sh` at setup time, plus a best-effort self-heal `chmod` in `frost-common.sh`'s `_frost_log_line()` in case anything ever writes there before deploy sets it up. None of the files in that directory are sensitive (status/log data, not secrets), so world-writable is an acceptable trade for "both root services and interactive users can use it without friction."
+
+### Real disk space needed is well past the per-pack estimates
+
+Each pack's own README estimated its *individual* footprint (5GB here, 10GB there) — accurate in isolation, but a full `frost-deploy.sh` run (core + branding + security + gaming) followed by `frost-desktop.sh` (GNOME) on the same 20GB test disk hit **0 bytes free**, mid-deployment. Steam's multilib dependency tree, a JDK for Burpsuite, a full GNOME Shell stack, and several AUR source builds all add up faster than each pack's standalone estimate suggests. **Budget 40GB+ for a disk that will run the full stack**, not the 15-20GB the per-pack docs suggest in isolation — those numbers are still correct for running *that one pack alone*, just not additive across all of them plus the desktop.
+
 ## Why not just use `archinstall`?
 
 `archinstall` is a fine general-purpose interactive installer. FROST is narrower and more opinionated on purpose: a fixed, reviewable package set for one audience (full-stack devs), scriptable end-to-end with no TUI to click through, and structured as three composable phases so you can stop after Phase 1 (just the base + toolchain) or Phase 2 (add AUR/dotfiles) without committing to the full user/bootloader/ISO pipeline.

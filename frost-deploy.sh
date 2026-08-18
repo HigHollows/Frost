@@ -238,7 +238,13 @@ install_operations_layer() {
     local bin_dir="${ROOT_PREFIX}/opt/frost/bin"
     local etc_dir="${ROOT_PREFIX}/etc/frost"
     local unit_dir="${ROOT_PREFIX}/etc/systemd/system"
-    mkdir -p "$lib_dir" "$bin_dir" "$etc_dir" "$unit_dir"
+    local log_dir="${ROOT_PREFIX}/var/log/frost"
+    mkdir -p "$lib_dir" "$bin_dir" "$etc_dir" "$unit_dir" "$log_dir"
+    # Both root (frost-daemon.service) and interactive non-root users
+    # (running `frost-status` by hand) write here — 1777, same idea as
+    # /tmp, so neither is locked out. Set explicitly at creation time
+    # rather than relying only on frost-common.sh's best-effort self-heal.
+    chmod 1777 "$log_dir"
 
     cp "${deploy_assets}/lib/frost-common.sh" "$lib_dir/"
     cp "${deploy_assets}/scripts/frost-security-audit.sh" "$bin_dir/"

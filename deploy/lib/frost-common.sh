@@ -26,7 +26,17 @@ fi
 : "${FROST_LOG_FILE:=/var/log/frost/frost.log}"
 
 _frost_log_line() {
-    mkdir -p "$(dirname "$FROST_LOG_FILE")" 2>/dev/null
+    local dir; dir="$(dirname "$FROST_LOG_FILE")"
+    # /var/log/frost is written by both root (frost-daemon.service,
+    # frost-deploy.sh) and interactive non-root users (running frost-status
+    # by hand). 1777 (world-writable, sticky bit — same idea as /tmp) is the
+    # simplest thing that lets both write without one clobbering the other's
+    # permission on files it doesn't own. frost-deploy.sh sets this at
+    # creation time; the chmod here is just a best-effort self-heal if this
+    # ever runs before that (silently no-ops for a non-owning non-root user,
+    # which is fine — nothing worse than before).
+    mkdir -p "$dir" 2>/dev/null
+    chmod 1777 "$dir" 2>/dev/null || true
     printf '%s\n' "$1" >> "$FROST_LOG_FILE" 2>/dev/null || true
 }
 

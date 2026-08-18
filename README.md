@@ -83,6 +83,7 @@ Full flag reference and design notes for each phase:
 - Root access
 - A network connection
 - For Phase 3's bootloader step: your target disk already partitioned, formatted, and mounted (including the ESP for UEFI) — FROST deliberately never partitions a disk for you
+- **Disk space: 40GB+ if you're running everything** (core + branding + security + gaming + desktop). Each pack's own README estimates its individual footprint, but a full stack — Steam's multilib tree, a JDK for Burpsuite, GNOME Shell, several AUR builds — filled a 20GB test disk completely during actual VM validation. 15-20GB is fine if you're only running a subset; see [ARCHITECTURE.md](ARCHITECTURE.md#real-disk-space-needed-is-well-past-the-per-pack-estimates).
 
 ## Project layout
 
