@@ -60,7 +60,33 @@ def make_wallpaper(width=1920, height=1080):
         a = random.randint(20, 50)
         sdraw.ellipse([x - r, y - r, x + r, y + r], fill=(240, 250, 255, a))
     img = img.convert("RGBA")
-    img = Image.alpha_composite(img, speck_layer).convert("RGB")
+    img = Image.alpha_composite(img, speck_layer)
+
+    # Faint hexagon facet lines — FROST's signature shape motif (see
+    # DESKTOP.README.md), used sparingly here as a background texture
+    # rather than a bold pattern: a handful of large, low-opacity
+    # hexagon outlines scattered off-center, like ice-crystal facets
+    # half-visible under frost. Deliberately subtle — this is a
+    # wallpaper meant to sit behind icons/dock, not a poster.
+    hex_layer = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+    hdraw = ImageDraw.Draw(hex_layer)
+    random.seed(11)
+
+    def hexagon_points(cx, cy, size):
+        return [
+            (cx + size * math.cos(math.radians(60 * i - 30)),
+             cy + size * math.sin(math.radians(60 * i - 30)))
+            for i in range(6)
+        ]
+
+    for _ in range(9):
+        cx = random.randint(0, width)
+        cy = random.randint(0, height)
+        size = random.randint(int(width * 0.05), int(width * 0.14))
+        alpha = random.randint(10, 22)
+        hdraw.polygon(hexagon_points(cx, cy, size), outline=(120, 200, 230, alpha), width=2)
+
+    img = Image.alpha_composite(img, hex_layer).convert("RGB")
 
     out = os.path.join(OUT_DIR, "frost-wallpaper.png")
     img.save(out, optimize=True)

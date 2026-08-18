@@ -57,6 +57,19 @@
 window,
 .background {
     border-radius: 12px;
+    transition: box-shadow 300ms ease;
+}
+
+/* Focused-window cyan glow, unfocused window plain shadow — GTK4's
+   `:backdrop` pseudo-class is the real "is this window focused" hook
+   (there's no separate window-manager-level CSS surface to do this
+   from, since Mutter draws CSD apps using each app's own GTK theme). */
+window.background:not(:backdrop) {
+    box-shadow: 0 0 20px alpha(@frost_accent, 0.35), 0 16px 48px alpha(black, 0.5);
+}
+
+window.background:backdrop {
+    box-shadow: 0 16px 48px alpha(black, 0.3);
 }
 
 headerbar,

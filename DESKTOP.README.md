@@ -28,12 +28,12 @@ This is the honest, buildable version of the spec's intent: FROST's own visual i
 |---|---|
 | `frost-desktop.sh` (the installer script) | Syntax-checked (`bash -n`), follows the same conventions as every other FROST script |
 | `desktop/theme/gtk-4.0/gtk.css` | Valid GTK4 CSS syntax; colors/contrast reasoned through, not rendered |
-| `desktop/extension/.../extension.js` | Syntax-checked with Node's parser (catches gross errors, not a substitute for GJS/gnome-shell's actual engine); written against documented GNOME 45+ APIs |
-| `desktop/extension/.../stylesheet.css` | St CSS class names (`#panel`, `.quick-settings`, etc.) match GNOME Shell's own stylesheet to the best of available knowledge — **not loaded into a real gnome-shell process** |
-| `desktop/config/dconf-frost-defaults.ini` | Most keys are well-established GNOME/Mutter schemas; the `org/guake/*` section is explicitly flagged lower-confidence — verify against the installed Guake version |
-| `desktop/wallpaper/frost-wallpaper.png` | Generated and viewed — this one's actually confirmed to look right |
+| `desktop/extension/.../extension.js` | **VM-validated (2026-08)**, `State: ACTIVE`, zero errors — the FROST panel menu and Steam Mode quick toggle both confirmed working live. Getting there took fixing three real runtime bugs Node's syntax check never could have caught (stale `shell-version`, missing `settings-schema`, wrong `addExternalIndicator()` contract) — see ARCHITECTURE.md Lesson 7 |
+| `desktop/extension/.../stylesheet.css` | `#panel`, `.quick-settings`, `.notification-banner`, `.overview`, `.search-entry`, `.dash` all VM-confirmed rendering correctly. The `#dashtodockContainer` hex-accent rules (added in the signature-identity pass) are newer and not yet re-verified the same way |
+| `desktop/config/dconf-frost-defaults.ini` | **VM-validated** — `dconf load` confirmed applying the theme/wallpaper/extensions live (see ARCHITECTURE.md Lesson 6 for a real bug that blocked this until fixed). The `org/guake/*` section is still lower-confidence — verify against the installed Guake version |
+| `desktop/wallpaper/frost-wallpaper.png` | Generated, viewed, and VM-confirmed rendering (hex-facet pattern added in the signature-identity pass) |
 
-**Test this on a real machine or VM before trusting it in production** — the same way Phases 1-3 were VM-validated before being called solid (see `ARCHITECTURE.md`). This pack hasn't had that pass yet.
+**Still open**: the FROST panel indicator's own hex icon (`icons/frost-hex.svg`) renders at a size/contrast that's hard to see against the dark panel in practice, even though the button itself is confirmed present and clickable (opens the FROST OS menu). Cosmetic, not functional — worth another pass with a bolder/filled glyph.
 
 ## Installing
 
@@ -109,6 +109,7 @@ desktop/
     metadata.json
     extension.js
     stylesheet.css
+    icons/frost-hex.svg
     schemas/org.gnome.shell.extensions.frost-shell.gschema.xml
   config/
     dconf-frost-defaults.ini

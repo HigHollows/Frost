@@ -3,6 +3,7 @@
     "name": "FROST Shell",
     "description": "FROST-specific Shell tweaks: Steam Mode quick toggle, hidden easter egg, subtle panel branding. Pairs with the FROST Iceblue GTK4 theme — this extension does NOT reimplement a dock, quick settings, or notifications: GNOME Shell already provides those (Quick Settings since 43, Dash to Dock as a separate well-established extension for the dock). See DESKTOP.README.md.",
     "version-name": "1.0",
-    "shell-version": ["45", "46", "47"],
+    "shell-version": ["45", "46", "47", "48", "49", "50"],
+    "settings-schema": "org.gnome.shell.extensions.frost-shell",
     "url": "https://github.com/HigHollows/Frost"
 }

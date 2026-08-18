@@ -61,14 +61,36 @@ class SteamModeToggle extends QuickSettings.QuickToggle {
     }
 });
 
+// GNOME 45+'s real contract for `quickSettings.addExternalIndicator()` is
+// a QuickSettings.SystemIndicator wrapper (it reads `quickSettingsItems`
+// off the object passed in), NOT a bare QuickToggle — passing the toggle
+// itself throws "can't access property 'forEach', items is undefined"
+// deep in panel.js, since there's no `quickSettingsItems` array on it.
+// VM-CONFIRMED (2026-08): this was a real bug here — see ARCHITECTURE.md.
+const SteamModeIndicator = GObject.registerClass(
+class SteamModeIndicator extends QuickSettings.SystemIndicator {
+    _init() {
+        super._init();
+        const toggle = new SteamModeToggle();
+        this.quickSettingsItems.push(toggle);
+    }
+});
+
 const FrostIndicator = GObject.registerClass(
 class FrostIndicator extends PanelMenu.Button {
-    _init() {
+    _init(extensionPath) {
         super._init(0.0, 'FROST', false);
 
+        // The hexagon-in-crystal glyph is FROST's own signature mark —
+        // deliberately not a generic weather/snow system icon — bundled
+        // as a file next to the extension and loaded directly (see the
+        // SVG's own header comment for why that's simpler than fighting
+        // GNOME's symbolic-icon recolor pipeline for an unbundled icon).
+        const iconFile = Gio.File.new_for_path(`${extensionPath}/icons/frost-hex.svg`);
         const icon = new St.Icon({
-            icon_name: 'weather-snow-symbolic',
+            gicon: new Gio.FileIcon({file: iconFile}),
             style_class: 'system-status-icon frost-panel-icon',
+            icon_size: 16,
         });
         this.add_child(icon);
 
@@ -86,13 +108,13 @@ export default class FrostShellExtension extends Extension {
     enable() {
         this._settings = this.getSettings();
 
-        this._indicator = new FrostIndicator();
+        this._indicator = new FrostIndicator(this.path);
         Main.panel.addToStatusArea(`${this.uuid}-indicator`, this._indicator, 1, 'right');
 
         // Quick Settings API (GNOME 43+): register an external indicator
         // rather than rebuilding the panel — this is the supported
         // extension point, not a private/internal hack.
-        this._steamToggle = new SteamModeToggle();
+        this._steamToggle = new SteamModeIndicator();
         Main.panel.statusArea.quickSettings.addExternalIndicator(this._steamToggle);
 
         Main.wm.addKeybinding(

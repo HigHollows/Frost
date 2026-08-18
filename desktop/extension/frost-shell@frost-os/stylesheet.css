@@ -19,6 +19,14 @@
  * process. Check against your GNOME version's own
  * /usr/share/gnome-shell/theme/gnome-shell.css if something doesn't
  * apply — see DESKTOP.README.md.
+ *
+ * VM-CONFIRMED (2026-08): #panel, .quick-settings, .notification-banner,
+ * .overview, .search-entry, and .dash all loaded and rendered correctly
+ * in a real GNOME session — see ARCHITECTURE.md Lesson 6 for how that
+ * was verified. The #dashtodockContainer rules further down (added in
+ * the signature-identity pass) are newer and NOT yet re-verified the
+ * same way — dash-to-dock's internal class names are the least stable
+ * part of this file.
  */
 
 /* ── Palette (kept in sync with the GTK4 theme) ─────────────────────── */
@@ -64,7 +72,10 @@ stage {
 }
 
 .frost-panel-icon {
-    color: #00d9ff;
+    /* Colors are baked into icons/frost-hex.svg itself (a static file
+       gicon, not a themed symbolic) so `color` here has no effect on
+       it — kept for icon-size only, and as a fallback for anyone who
+       swaps the icon back to a real symbolic/themed one. */
     icon-size: 16px;
 }
 
@@ -75,9 +86,16 @@ stage {
 
 .quick-settings {
     background-color: rgba(26, 35, 50, 0.92);
-    border: 1px solid rgba(36, 52, 71, 0.8);
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 217, 255, 0.25);
+    /* Faceted corner — two corners cut sharp, two rounded normally.
+       This diagonal-cut silhouette is FROST's signature shape motif
+       (an ice-crystal facet, not a full hexagon outline — a true
+       6-sided polygon needs clip-path, which St/Clutter CSS doesn't
+       support; this is the closest honest approximation using only
+       border-radius). Reused on every floating panel below so it
+       reads as one consistent identity, not a one-off. */
+    border-radius: 4px 20px 4px 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 24px rgba(0, 217, 255, 0.12);
 }
 
 .quick-toggle,
@@ -103,9 +121,9 @@ stage {
 
 .notification-banner {
     background-color: rgba(26, 35, 50, 0.95);
-    border: 1px solid rgba(36, 52, 71, 0.8);
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 217, 255, 0.2);
+    border-radius: 4px 20px 4px 20px; /* same facet motif as .quick-settings */
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 20px rgba(0, 217, 255, 0.1);
     color: #f0f4f8;
     transition-duration: 200ms;
 }
@@ -131,6 +149,7 @@ stage {
 
 .search-entry:focus {
     border: 2px solid #00d9ff;
+    box-shadow: 0 0 16px rgba(0, 217, 255, 0.3);
 }
 
 /* ── Dash (if not using Dash to Dock) ────────────────────────────────
@@ -142,11 +161,31 @@ stage {
 
 .dash {
     background-color: rgba(26, 35, 50, 0.85);
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 217, 255, 0.2);
+    border-radius: 4px 20px 4px 20px; /* same facet motif */
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), 0 0 20px rgba(0, 217, 255, 0.1);
 }
 
 .dash-item-container .app-well-app:hover {
     background-color: rgba(0, 217, 255, 0.12);
     border-radius: 10px;
+}
+
+/* ── Dash to Dock (the actual dock in normal use) ─────────────────────
+ * UNVERIFIED class names: dash-to-dock builds its own DOM-like actor
+ * tree independent of GNOME's built-in .dash above, and its exact
+ * St class names have shifted across versions. These target the
+ * documented/common ones (dash-to-dock's own stylesheet.css in its
+ * source) but check `looking-glass` (Alt+F2 → lg) against the
+ * installed version if the running-indicator glow doesn't show up. */
+
+#dashtodockContainer .dash-background {
+    border-radius: 4px 20px 4px 20px;
+    border: 1px solid rgba(0, 217, 255, 0.2);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), 0 0 20px rgba(0, 217, 255, 0.1);
+}
+
+#dashtodockContainer .running-indicator {
+    background-color: #00d9ff;
+    box-shadow: 0 0 6px rgba(0, 217, 255, 0.8);
 }
