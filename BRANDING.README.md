@@ -1,6 +1,8 @@
 # FROST — Boot & Aesthetic pack
 
-Visual identity for FROST: GRUB theme, Plymouth boot splash, `/etc/motd`, and zsh aliases. Config files + generated assets live under [`branding/`](branding/); [`frost-branding.sh`](frost-branding.sh) installs all of it onto a target built by Phases 1-3.
+Visual identity for FROST: GRUB theme, Plymouth boot splash, `/etc/motd`, `/etc/os-release`, and zsh aliases. Config files + generated assets live under [`branding/`](branding/); [`frost-branding.sh`](frost-branding.sh) installs all of it onto a target built by Phases 1-3.
+
+**`/etc/motd` is SSH/tty-only by design.** VM-testing this alongside `frost-desktop.sh` surfaced a real bug: GDM's login screen shows PAM session text raw, with no ANSI interpretation — so the colorful figlet MOTD rendered as garbled `[1;36m` escape codes on the greeter. The fix lives in `frost-desktop.sh` (`disable_motd_on_gdm`), not here — it rewrites GDM's own PAM session stack to skip `pam_motd`/`pam_mail`, since those are shell-login concepts that don't belong in a graphical login manager. `/etc/motd` itself is untouched and still renders in full color over SSH/tty. See ARCHITECTURE.md Lesson 8.
 
 ```
 branding/
@@ -23,6 +25,7 @@ branding/
     motd.template               /etc/motd template with {{TAG}} placeholders
     branding.conf.example        user-editable variables (tagline, version, fake error)
     frost-motd-render.sh          renders the template -> /etc/motd
+                                    (SSH/tty only — see the note above)
   zsh/
     frost.zshrc                   aliases, prompt, colors — sourced, not copied per-user
   tools/
@@ -76,11 +79,12 @@ sudo ./frost-branding.sh --target /mnt --tagline "built for ${USER}"
 sudo ./frost-branding.sh --target /mnt --dry-run                  # preview
 ```
 
-Flags: `--skip-grub`, `--skip-plymouth`, `--skip-motd`, `--skip-zsh`, `--tagline "<text>"`, `--font-package <name>` (override Nerd Font package auto-detection), `--dry-run`. Same rollback/backup safety model as the other three scripts (config backups before edit, only this run's own files removed on failure).
+Flags: `--skip-grub`, `--skip-plymouth`, `--skip-motd`, `--skip-zsh`, `--skip-os-release`, `--tagline "<text>"`, `--font-package <name>` (override Nerd Font package auto-detection), `--dry-run`. Same rollback/backup safety model as the other three scripts (config backups before edit, only this run's own files removed on failure).
 
 ## Customizing after install
 
 - **MOTD tagline / fake error**: edit `/etc/frost/branding.conf`, then `sudo /opt/frost/bin/frost-motd-render.sh`. Set `FROST_FAKE_ERROR=""` to remove the joke error line entirely.
+- **Distro identity (`/etc/os-release`)**: FROST rewrites this to `NAME="FROST"`, `PRETTY_NAME="FROST Linux"`, `ID=frost`, `ID_LIKE=arch` (the standard freedesktop way of crediting the base distro — read by tooling, not rendered as a "based on Arch" line in GNOME's own About panel, which only shows `PRETTY_NAME`; that's a GNOME limitation, not something worth patching `gnome-control-center` over), and clears `LOGO=` since Arch's own `gdm` package hardcodes a logo via a gschema override, not via this file — see ARCHITECTURE.md Lesson 8 for why both pieces were needed. Edit `/etc/os-release` directly (it's a static file, not templated) if you want different values; `hostnamectl` and `neofetch`-style tools read it live.
 - **zsh aliases**: edit `/etc/frost/frost.zshrc` directly (it's sourced live, no rebuild step). It doesn't change anyone's shell — `chsh -s /usr/bin/zsh <user>` to actually use it.
 - **Regenerating the images**: `pip install Pillow && python branding/tools/generate_assets.py` — everything is generated from code, no binary asset is hand-crafted or unreproducible.
 

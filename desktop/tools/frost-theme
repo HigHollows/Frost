@@ -1,0 +1,103 @@
+#!/usr/bin/env bash
+# frost-theme — switch between FROST OS color presets.
+#
+# Installed by frost-desktop.sh to /opt/frost/bin/frost-theme, symlinked
+# onto PATH as `frost-theme` (same pattern as frost-cli in
+# frost-phase2.sh). Presets themselves live in /opt/frost/desktop/theme-
+# variants/ (also installed by frost-desktop.sh), generated from the
+# canonical FROST Blue theme by desktop/tools/generate_theme_variants.py
+# — see that script for how the palettes are derived.
+#
+# Switches: the per-user GTK4 override (~/.config/gtk-4.0/gtk.css, the
+# path GTK4 always loads regardless of theme name), the frost-shell
+# extension's own stylesheet.css, and org.gnome.desktop.interface's
+# accent-color to the closest built-in match. GTK4 apps pick the new
+# palette up on next launch; GNOME Shell chrome (top bar, quick
+# settings, notifications) needs a reload — X11 supports Alt+F2 → r,
+# Wayland needs a full logout/login (Mutter doesn't support live Shell
+# reload on Wayland — this is a real GNOME limitation, not a FROST one).
+set -euo pipefail
+
+THEMES_DIR="/opt/frost/desktop/theme-variants"
+EXT_DIR="${HOME}/.local/share/gnome-shell/extensions/frost-shell@frost-os"
+GTK4_USER_DIR="${HOME}/.config/gtk-4.0"
+CURRENT_FILE="${HOME}/.config/frost-theme-current"
+
+usage() {
+    cat <<EOF
+frost-theme — switch FROST OS color presets
+
+Usage:
+  frost-theme list              List available presets
+  frost-theme current           Show the active preset
+  frost-theme <preset-name>     Switch to a preset
+EOF
+}
+
+list_themes() {
+    [[ -d "$THEMES_DIR" ]] || { echo "No presets installed at ${THEMES_DIR}." >&2; exit 1; }
+    local current=""
+    [[ -f "$CURRENT_FILE" ]] && current="$(cat "$CURRENT_FILE")"
+    for d in "$THEMES_DIR"/*/; do
+        [[ -d "$d" ]] || continue
+        local name; name="$(basename "$d")"
+        if [[ "$name" == "$current" ]]; then
+            printf "  %s (active)\n" "$name"
+        else
+            printf "  %s\n" "$name"
+        fi
+    done
+}
+
+show_current() {
+    if [[ -f "$CURRENT_FILE" ]]; then
+        cat "$CURRENT_FILE"
+    else
+        echo "frost-blue (default — never explicitly switched)"
+    fi
+}
+
+switch_theme() {
+    local name="$1"
+    local src="${THEMES_DIR}/${name}"
+    if [[ ! -d "$src" ]]; then
+        echo "Unknown preset: ${name}" >&2
+        echo "" >&2
+        echo "Available presets:" >&2
+        list_themes >&2
+        exit 1
+    fi
+
+    mkdir -p "$GTK4_USER_DIR"
+    cp "${src}/gtk-4.0/gtk.css" "${GTK4_USER_DIR}/gtk.css"
+    echo "GTK4 theme applied -> ${GTK4_USER_DIR}/gtk.css"
+
+    if [[ -f "${src}/shell-stylesheet.css" && -d "$EXT_DIR" ]]; then
+        cp "${src}/shell-stylesheet.css" "${EXT_DIR}/stylesheet.css"
+        echo "Shell chrome stylesheet applied -> ${EXT_DIR}/stylesheet.css"
+    else
+        echo "Note: frost-shell extension not found at ${EXT_DIR} — Shell chrome (top bar, quick settings) not updated." >&2
+    fi
+
+    if [[ -f "${src}/accent-color" ]] && command -v gsettings &>/dev/null; then
+        gsettings set org.gnome.desktop.interface accent-color "$(cat "${src}/accent-color")" 2>/dev/null \
+            || echo "Note: couldn't set accent-color via gsettings (no running session?)." >&2
+    fi
+
+    mkdir -p "$(dirname "$CURRENT_FILE")"
+    echo "$name" > "$CURRENT_FILE"
+
+    echo ""
+    echo "Switched to ${name}."
+    echo "GTK4 apps pick this up on next launch."
+    echo "For the Shell chrome (top bar, quick settings, notifications):"
+    echo "  X11:     Alt+F2, type r, Enter"
+    echo "  Wayland: log out and back in"
+}
+
+case "${1:-}" in
+    ""|-h|--help) usage ;;
+    list) list_themes ;;
+    current) show_current ;;
+    *) switch_theme "$1" ;;
+esac

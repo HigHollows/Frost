@@ -3,10 +3,13 @@
 # frost-desktop.sh — FROST OS Desktop (GNOME Shell + FROST Iceblue theme)
 #
 # Installs GNOME Shell/Mutter as the Wayland compositor, the FROST
-# Iceblue GTK4/Libadwaita theme, the frost-shell GNOME Shell extension,
-# Dash to Dock + Blur my Shell (real, existing extensions — not
-# reimplemented here), Guake (dropdown terminal), Nautilus, fonts
-# (Inter, JetBrains Mono), Papirus icons, and the FROST wallpaper.
+# Iceblue GTK4/Libadwaita theme (plus 3 alternate color presets,
+# switchable via frost-theme — see desktop/tools/generate_theme_variants.py),
+# the frost-shell GNOME Shell extension, Dash to Dock + Blur my Shell +
+# Vitals (real, existing extensions — not reimplemented here),
+# power-profiles-daemon (native GNOME Power Mode toggle), Guake
+# (dropdown terminal), Nautilus, fonts (Inter, JetBrains Mono), Papirus
+# icons, and the FROST wallpaper.
 #
 # ⚠ This is an ALTERNATIVE to frost-phase3.sh's `--profile desktop`
 # (Xorg + i3 + lightdm) — a different, heavier, more integrated desktop
@@ -214,6 +217,89 @@ install_gnome_stack() {
     install_tool "Nautilus (Files)"             "nautilus" "" || true
     install_tool "Networking/audio (should already be present)" "networkmanager pipewire pipewire-pulse wireplumber" "" || true
     run chroot_exec "systemctl enable gdm.service" || true
+    disable_motd_on_gdm
+    remove_gdm_arch_logo
+}
+
+remove_gdm_arch_logo() {
+    # VM-CONFIRMED (2026-08): clearing /etc/os-release's LOGO field
+    # (frost-branding.sh's install_os_release, if that pack has run)
+    # does NOT remove the Arch Linux logo from the GDM greeter — it
+    # isn't derived from os-release at all. The actual source: Arch's
+    # `gdm` package ships /usr/share/glib-2.0/schemas/
+    # 30_org.archlinux.gdm.gschema.override, which hardcodes
+    # `org.gnome.login-screen`'s `logo` key directly to
+    # /usr/share/pixmaps/archlinux-logo-text-dark.svg — a gschema
+    # override, not a runtime default, so nothing short of a
+    # higher-priority override actually changes it.
+    #
+    # Fix: a FROST override file that sorts after "30_" alphabetically
+    # (glib-compile-schemas applies later files' keys last) clearing
+    # `logo` to empty — matches what was actually asked for (no distro
+    # logo on the greeter at all), not a swap to FROST's own logo there.
+    step "Removing Arch Linux logo from the GDM greeter"
+    local schema_dir="${ROOT_PREFIX}/usr/share/glib-2.0/schemas"
+    if [[ ! -d "$schema_dir" ]]; then
+        warn "  ${schema_dir} not found — skipping (gdm not installed?)"; return 0
+    fi
+    local override="${schema_dir}/50_frost.gschema.override"
+    if [[ "$DRY_RUN" != true ]]; then
+        cat > "$override" <<'EOF'
+[org.gnome.login-screen]
+logo=""
+EOF
+    fi
+    CREATED_FILES+=("$override")
+    run chroot_exec "glib-compile-schemas '${schema_dir#"$ROOT_PREFIX"}'" || true
+    success "  GDM logo cleared (50_frost.gschema.override)"
+}
+
+disable_motd_on_gdm() {
+    # VM-CONFIRMED (2026-08): GDM's greeter surfaces PAM session text
+    # messages RAW, with no ANSI interpretation — so frost-branding.sh's
+    # colorful figlet /etc/motd (great over SSH/tty) rendered as a wall
+    # of garbled `[1;36m` escape-code text on the login screen. Root
+    # cause: gdm-password/gdm-autologin's `session include system-local-
+    # login` chains through to system-login, which pulls in
+    # `pam_motd.so` (and `pam_mail.so`) — appropriate for a real shell
+    # login, meaningless for a graphical greeter. Rather than degrade
+    # the MOTD itself (which would make it worse for its actual intended
+    # audience, SSH/tty users), this replaces just the `session include
+    # system-local-login` line in gdm-password/gdm-autologin with the
+    # same stack expanded inline minus pam_motd/pam_mail — auth/account/
+    # password keep delegating to system-local-login unchanged.
+    step "Suppressing raw /etc/motd on the GDM greeter"
+
+    local expanded_session
+    expanded_session=$(cat <<'EOF'
+session    optional   pam_loginuid.so
+session    optional   pam_keyinit.so       force revoke
+session    include    system-auth
+session    optional   pam_lastlog2.so      silent
+session    optional   pam_umask.so
+-session   optional   pam_systemd.so
+session    required   pam_env.so
+EOF
+)
+
+    for pam_file in gdm-password gdm-autologin; do
+        local dst="${ROOT_PREFIX}/etc/pam.d/${pam_file}"
+        [[ -f "$dst" ]] || { warn "  ${pam_file} not found — skipping (gdm not installed?)"; continue; }
+        grep -q '^session[[:space:]]\+include[[:space:]]\+system-local-login$' "$dst" 2>/dev/null \
+            || { log "  ${pam_file} already customized — leaving as-is"; continue; }
+
+        local backup="${dst}.frost-bak-$(date +%s)"
+        run cp "$dst" "$backup"
+        BACKED_UP_FILES+=("${dst}|${backup}")
+
+        if [[ "$DRY_RUN" != true ]]; then
+            awk -v repl="$expanded_session" '
+                /^session[[:space:]]+include[[:space:]]+system-local-login$/ { print repl; next }
+                { print }
+            ' "$dst" > "${dst}.frost-tmp" && mv "${dst}.frost-tmp" "$dst"
+        fi
+        success "  ${pam_file}: session stack expanded, pam_motd/pam_mail dropped"
+    done
 }
 
 install_theme_and_fonts() {
@@ -260,6 +346,50 @@ install_dock_and_blur() {
     step "Dash to Dock, Blur my Shell (real, existing extensions)"
     install_tool "Dash to Dock" "gnome-shell-extension-dash-to-dock" "gnome-shell-extension-dash-to-dock" || true
     install_tool "Blur my Shell" "" "gnome-shell-extension-blur-my-shell" || true
+}
+
+install_performance_monitor() {
+    step "Vitals (CPU/RAM/GPU/temp panel monitor — real, existing extension)"
+    install_tool "Vitals" "" "gnome-shell-extension-vitals" || true
+}
+
+install_power_profiles() {
+    step "Power profiles (Performance / Balanced / Power Saver)"
+    # power-profiles-daemon is what makes GNOME's native "Power Mode"
+    # Quick Settings entry appear at all — no extension needed, GNOME
+    # Shell has built this in since ~43. This is the honest version of
+    # the spec's 4-tier power-mode system: GNOME gives 3 real tiers
+    # (there's no distinct "Ultra Power Saver" beyond Power Saver at the
+    # OS level), themed automatically by stylesheet.css's .quick-toggle
+    # rules like every other Quick Settings entry.
+    install_tool "power-profiles-daemon" "power-profiles-daemon" "" || true
+    run chroot_exec "systemctl enable power-profiles-daemon.service" || true
+}
+
+install_theme_variants() {
+    step "FROST color presets (frost-theme CLI)"
+    local variants_dst="${ROOT_PREFIX}/opt/frost/desktop/theme-variants"
+    run mkdir -p "$variants_dst"
+    run cp -r "${ASSETS_DIR}/theme-variants/"* "$variants_dst/"
+    CREATED_DIRS+=("$variants_dst")
+
+    local bin_dir="${ROOT_PREFIX}/opt/frost/bin"
+    run mkdir -p "$bin_dir"
+    local cli_path="${bin_dir}/frost-theme"
+    local is_new=true
+    [[ -f "$cli_path" ]] && is_new=false
+    run cp "${ASSETS_DIR}/tools/frost-theme" "$cli_path"
+    run chmod 755 "$cli_path"
+    $is_new && CREATED_FILES+=("$cli_path")
+
+    local link_dir="${ROOT_PREFIX}/usr/local/bin"
+    run mkdir -p "$link_dir"
+    local link_path="${link_dir}/frost-theme"
+    if [[ ! -e "$link_path" ]]; then
+        run ln -s /opt/frost/bin/frost-theme "$link_path"
+        CREATED_FILES+=("$link_path")
+    fi
+    tool_success "frost-theme (presets: $(ls "${ASSETS_DIR}/theme-variants" | tr '\n' ' '))"
 }
 
 install_terminal() {
@@ -312,8 +442,11 @@ main() {
 
     install_gnome_stack
     install_theme_and_fonts
+    install_theme_variants
     install_frost_shell_extension
     install_dock_and_blur
+    install_performance_monitor
+    install_power_profiles
     install_terminal
     install_wallpaper
     apply_dconf_defaults

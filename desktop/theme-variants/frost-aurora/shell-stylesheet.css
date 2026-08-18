@@ -35,8 +35,8 @@ stage {
     -frost-bg-dark: #0f1419;
     -frost-surface-1: #1a2332;
     -frost-surface-2: #243447;
-    -frost-accent: #00d9ff;
-    -frost-accent-2: #4da6ff;
+    -frost-accent: #ff00ff;
+    -frost-accent-2: #00ff88;
     -frost-text-primary: #f0f4f8;
     -frost-text-secondary: #a8b8c8;
     -frost-danger: #ff6b6b;
@@ -61,13 +61,13 @@ stage {
 
 #panel .panel-button:hover,
 #panel .panel-button:focus {
-    background-color: rgba(0, 217, 255, 0.12); /* frost-accent @ 12% */
+    background-color: rgba(255, 0, 255, 0.12); /* frost-accent @ 12% */
     border-radius: 8px;
 }
 
 #panel .panel-button:active,
 #panel .panel-button:checked {
-    background-color: rgba(0, 217, 255, 0.2);
+    background-color: rgba(255, 0, 255, 0.2);
     border-radius: 8px;
 }
 
@@ -86,7 +86,7 @@ stage {
 
 .quick-settings {
     background-color: rgba(26, 35, 50, 0.92);
-    border: 1px solid rgba(0, 217, 255, 0.25);
+    border: 1px solid rgba(255, 0, 255, 0.25);
     /* Faceted corner — two corners cut sharp, two rounded normally.
        This diagonal-cut silhouette is FROST's signature shape motif
        (an ice-crystal facet, not a full hexagon outline — a true
@@ -95,7 +95,7 @@ stage {
        border-radius). Reused on every floating panel below so it
        reads as one consistent identity, not a one-off. */
     border-radius: 4px 20px 4px 20px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 24px rgba(0, 217, 255, 0.12);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 24px rgba(255, 0, 255, 0.12);
 }
 
 .quick-toggle,
@@ -105,31 +105,31 @@ stage {
 }
 
 .quick-toggle:checked {
-    background-color: #00d9ff;
+    background-color: #ff00ff;
     color: #0f1419;
 }
 
 .quick-toggle:hover {
-    background-color: rgba(0, 217, 255, 0.15);
+    background-color: rgba(255, 0, 255, 0.15);
 }
 
 .quick-slider slider {
-    color: #00d9ff;
+    color: #ff00ff;
 }
 
 /* ── Notifications ────────────────────────────────────────────────── */
 
 .notification-banner {
     background-color: rgba(26, 35, 50, 0.95);
-    border: 1px solid rgba(0, 217, 255, 0.2);
+    border: 1px solid rgba(255, 0, 255, 0.2);
     border-radius: 4px 20px 4px 20px; /* same facet motif as .quick-settings */
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 20px rgba(0, 217, 255, 0.1);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 20px rgba(255, 0, 255, 0.1);
     color: #f0f4f8;
     transition-duration: 200ms;
 }
 
 .notification-banner .notification-icon {
-    color: #00d9ff;
+    color: #ff00ff;
 }
 
 /* ── Overview / launcher (Super key) ────────────────────────────────
@@ -148,8 +148,8 @@ stage {
 }
 
 .search-entry:focus {
-    border: 2px solid #00d9ff;
-    box-shadow: 0 0 16px rgba(0, 217, 255, 0.3);
+    border: 2px solid #ff00ff;
+    box-shadow: 0 0 16px rgba(255, 0, 255, 0.3);
 }
 
 /* ── Dash (if not using Dash to Dock) ────────────────────────────────
@@ -161,13 +161,13 @@ stage {
 
 .dash {
     background-color: rgba(26, 35, 50, 0.85);
-    border: 1px solid rgba(0, 217, 255, 0.2);
+    border: 1px solid rgba(255, 0, 255, 0.2);
     border-radius: 4px 20px 4px 20px; /* same facet motif */
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), 0 0 20px rgba(0, 217, 255, 0.1);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 0, 255, 0.1);
 }
 
 .dash-item-container .app-well-app:hover {
-    background-color: rgba(0, 217, 255, 0.12);
+    background-color: rgba(255, 0, 255, 0.12);
     border-radius: 10px;
 }
 
@@ -181,13 +181,13 @@ stage {
 
 #dashtodockContainer .dash-background {
     border-radius: 4px 20px 4px 20px;
-    border: 1px solid rgba(0, 217, 255, 0.2);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), 0 0 20px rgba(0, 217, 255, 0.1);
+    border: 1px solid rgba(255, 0, 255, 0.2);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 0, 255, 0.1);
 }
 
 #dashtodockContainer .running-indicator {
-    background-color: #00d9ff;
-    box-shadow: 0 0 6px rgba(0, 217, 255, 0.8);
+    background-color: #ff00ff;
+    box-shadow: 0 0 6px rgba(255, 0, 255, 0.8);
 }
 
 /* ── Vitals (performance monitor extension) ───────────────────────────
@@ -198,5 +198,5 @@ stage {
 
 .extension-vitals-panel-icon,
 .extension-vitals-panel-label {
-    color: #00d9ff;
+    color: #ff00ff;
 }

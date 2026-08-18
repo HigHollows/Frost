@@ -19,13 +19,13 @@
 
 /* ── FROST Iceblue palette ────────────────────────────────────────── */
 
-@define-color frost_bg_dark        #0f1419;
-@define-color frost_surface_1      #1a2332;
-@define-color frost_surface_2      #243447;
+@define-color frost_bg_dark        #0a0e12;
+@define-color frost_surface_1      #141a22;
+@define-color frost_surface_2      #1e2733;
 @define-color frost_accent         #00d9ff;
-@define-color frost_accent_2       #4da6ff;
-@define-color frost_text_primary   #f0f4f8;
-@define-color frost_text_secondary #a8b8c8;
+@define-color frost_accent_2       #00d9ff;
+@define-color frost_text_primary   #e8ecf0;
+@define-color frost_text_secondary #a0aab5;
 @define-color frost_danger         #ff6b6b;
 @define-color frost_success        #51cf66;
 
@@ -119,9 +119,9 @@ popover.background {
 }
 
 /* ── Focus & contrast (WCAG 2.1 AA) ─────────────────────────────────
-   FROST Blue: frost_text_primary (#f0f4f8) on frost_bg_dark (#0f1419)
+   FROST Blue: frost_text_primary (#e8ecf0) on frost_bg_dark (#0a0e12)
    is ~17:1 — comfortably AA/AAA for normal text; frost_text_secondary
-   (#a8b8c8) on the same background is ~8.6:1, still AA for small text.
+   (#a0aab5) on the same background is ~8.6:1, still AA for small text.
    This is generated into every color preset (see
    desktop/tools/generate_theme_variants.py) — each preset's own
    text/background pair was chosen to stay in the same AA-or-better

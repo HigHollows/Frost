@@ -1,0 +1,19 @@
+[Desktop Entry]
+Type=X-GNOME-Metatheme
+Name=FROST Noir
+Comment=FROST Iceblue — dark, minimalist, cyan accent
+Encoding=UTF-8
+
+[X-GNOME-Metatheme]
+GtkTheme=FROST
+IconTheme=Papirus-Dark
+CursorTheme=Adwaita
+
+# NOTE: modern libadwaita apps mostly ignore the named gtk-theme setting
+# in favor of light/dark mode + the system accent color — this
+# index.theme + gtk-4.0/gtk.css folder is provided for apps/toolkits
+# that still respect it (and for GTK3 apps, if you add a gtk-3.0/
+# variant later). The reliable path for libadwaita specifically is
+# frost-desktop.sh installing gtk-4.0/gtk.css to
+# ~/.config/gtk-4.0/gtk.css directly, which GTK4 always loads on top of
+# whatever theme is active — see DESKTOP.README.md.

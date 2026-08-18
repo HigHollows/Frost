@@ -108,6 +108,7 @@ SKIP_GRUB=false
 SKIP_PLYMOUTH=false
 SKIP_MOTD=false
 SKIP_ZSH=false
+SKIP_OS_RELEASE=false
 TAGLINE=""
 NERD_FONT_PKG="" # auto-detected unless overridden
 
@@ -123,6 +124,7 @@ Usage: sudo ./${SCRIPT_NAME} [options]
   --skip-plymouth         Skip the Plymouth boot splash
   --skip-motd             Skip the /etc/motd install
   --skip-zsh               Skip the zsh aliases
+  --skip-os-release          Skip rewriting /etc/os-release (FROST identity, no distro logo)
   --tagline "<text>"        Override the default /etc/motd tagline
   --font-package <name>      Force a specific Nerd Font package name
   --dry-run                    Print what would happen, change nothing
@@ -138,6 +140,7 @@ while [[ $# -gt 0 ]]; do
         --skip-plymouth) SKIP_PLYMOUTH=true; shift ;;
         --skip-motd)     SKIP_MOTD=true; shift ;;
         --skip-zsh)      SKIP_ZSH=true; shift ;;
+        --skip-os-release) SKIP_OS_RELEASE=true; shift ;;
         --tagline)       TAGLINE="${2:?}"; shift 2 ;;
         --font-package)  NERD_FONT_PKG="${2:?}"; shift 2 ;;
         --dry-run)       DRY_RUN=true; shift ;;
@@ -396,6 +399,50 @@ install_motd() {
 }
 
 # ─────────────────────────────────────────────────────────────────────────
+# 6.5. /etc/os-release — FROST's own distro identity
+# ─────────────────────────────────────────────────────────────────────────
+
+install_os_release() {
+    step "/etc/os-release (FROST identity)"
+    if [[ "$SKIP_OS_RELEASE" == true ]]; then
+        warn "Skipping /etc/os-release (--skip-os-release)"; return 0
+    fi
+
+    # Found during real GNOME-session testing: with a stock Arch
+    # /etc/os-release, GDM's login screen shows the Arch Linux logo as a
+    # watermark (GNOME reads os-release's LOGO= field, which pacman's
+    # base-files package sets to "archlinux-logo" and never anything
+    # FROST-specific, since nothing before this wrote FROST's own
+    # os-release). Clearing LOGO removes it — matches what was actually
+    # asked for (no logo on the greeter at all, not a swap to FROST's
+    # own logo there); Arch is credited instead via the standard
+    # ID_LIKE=arch field, and PRETTY_NAME/HOME_URL identify FROST.
+    local os_release="${ROOT_PREFIX}/etc/os-release"
+    if [[ -f "$os_release" ]]; then
+        local backup="${os_release}.frost-bak-$(date +%s)"
+        run cp "$os_release" "$backup"
+        BACKED_UP_FILES+=("${os_release}|${backup}")
+    fi
+
+    if [[ "$DRY_RUN" != true ]]; then
+        cat > "$os_release" <<EOF
+NAME="FROST"
+PRETTY_NAME="FROST Linux"
+ID=frost
+ID_LIKE=arch
+BUILD_ID=rolling
+ANSI_COLOR="0;36"
+LOGO=
+HOME_URL="https://github.com/HigHollows/Frost"
+DOCUMENTATION_URL="https://github.com/HigHollows/Frost#readme"
+SUPPORT_URL="https://github.com/HigHollows/Frost/issues"
+BUG_REPORT_URL="https://github.com/HigHollows/Frost/issues"
+EOF
+    fi
+    success "/etc/os-release rewritten (FROST identity, ID_LIKE=arch, no login-screen logo)"
+}
+
+# ─────────────────────────────────────────────────────────────────────────
 # 7. ZSH ALIASES
 # ─────────────────────────────────────────────────────────────────────────
 
@@ -483,6 +530,7 @@ main() {
     install_grub_theme
     install_plymouth
     install_motd
+    install_os_release
     install_zsh
     write_marker
 
@@ -493,6 +541,7 @@ main() {
     success "GRUB theme   : $([[ $SKIP_GRUB == true ]] && echo skipped || { [[ $ACTIVE_BOOTLOADER == grub ]] && echo applied || echo "n/a (not using grub)"; })"
     success "Plymouth     : $([[ $SKIP_PLYMOUTH == true ]] && echo skipped || echo applied)"
     success "MOTD         : $([[ $SKIP_MOTD == true ]] && echo skipped || echo applied)"
+    success "os-release   : $([[ $SKIP_OS_RELEASE == true ]] && echo skipped || echo applied)"
     success "zsh aliases  : $([[ $SKIP_ZSH == true ]] && echo skipped || echo applied)"
     success "Log file     : ${LOG_FILE}"
     printf "\n%b❄  FROST looks like FROST now.%b\n\n" "${C_CYAN}${C_BOLD}" "${C_RESET}"
