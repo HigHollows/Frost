@@ -86,6 +86,18 @@ If Phase 3 runs in a session where nothing else already synced the live environm
 
 **Fix:** `generate_iso_profile()` runs `pacman -Sy --noconfirm` on the host immediately before installing `archiso`, independent of whatever state the target's databases are in.
 
+### Lesson 4: a bare `[[ cond ]] && { ...; exit 1; }` as a whole function body inverts under `set -e`
+
+Found testing `frost-deploy.sh` chaining into `frost-branding.sh` for the first time (a later VM session than the Phase 1-3 pass above) — the script died silently right after `check_root`, no error message, even though it *was* running as root.
+
+`check_root() { [[ "$EUID" -ne 0 ]] && { error ...; exit 1; }; }` looks like a harmless one-liner, and the equivalent bare `[[ cond ]] && action` statement written *directly* in a function body (not isolated as the function's entire content) is genuinely safe under `set -e` — bash exempts a command that's "part of a list controlled by `&&`/`||`" from triggering `-e`, and this is a common, correct idiom used throughout FROST (e.g. every `rollback()`'s `[[ -z "$pair" ]] && continue`).
+
+The trap: when that guard is a function's **entire** body, and the condition is false (the good path — you *are* root), the guard's own exit status (1, from the failed left-hand test) becomes the function's return value. At the call site (`check_root`, called bare in `main()`), that's just an ordinary command returning non-zero — the `&&` exemption is local to where the `&&` textually appears and does **not** propagate across a function-call boundary. `set -e` sees a plain command fail and aborts, on the path where everything was actually fine.
+
+Confirmed with a 5-line reproduction before trusting the diagnosis (see the commit history) — a function whose entire body is `[[ 1 -eq 2 ]] && { echo hi; }`, called bare, kills a `set -e` script on the spot; the same guard written as one statement among several in a larger function does not.
+
+**Fix:** never write a validation guard as a function's sole statement in `&&` form. Use `if`/`fi` instead — `if [[ cond ]]; then action; fi` returns 0 regardless of whether the branch ran, so it can't invert a function's return value this way. `frost-branding.sh` and `frost-gaming.sh`'s `check_root()` were rewritten this way (matching what `frost-build.sh`/`frost-phase2.sh`/`frost-phase3.sh` already did — this bug was specific to the later scripts that had compacted the idiom for brevity).
+
 ## Why not just use `archinstall`?
 
 `archinstall` is a fine general-purpose interactive installer. FROST is narrower and more opinionated on purpose: a fixed, reviewable package set for one audience (full-stack devs), scriptable end-to-end with no TUI to click through, and structured as three composable phases so you can stop after Phase 1 (just the base + toolchain) or Phase 2 (add AUR/dotfiles) without committing to the full user/bootloader/ISO pipeline.

@@ -162,7 +162,14 @@ run() {
 # ─────────────────────────────────────────────────────────────────────────
 
 check_root() {
-    [[ "$EUID" -ne 0 ]] && { error "Run as root: sudo ./${SCRIPT_NAME}"; exit 1; }
+    # See frost-branding.sh's check_root() for why this must be `if`, not a
+    # bare `[[ ]] && { ...; exit 1; }` function body — the latter aborts
+    # the whole script under set -e on the "we ARE root" path, not just the
+    # failure path. Confirmed by an actual VM crash — see ARCHITECTURE.md.
+    if [[ "$EUID" -ne 0 ]]; then
+        error "Run as root: sudo ./${SCRIPT_NAME}"
+        exit 1
+    fi
 }
 
 check_arch_linux() {

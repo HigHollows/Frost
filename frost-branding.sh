@@ -159,7 +159,18 @@ run() {
 # ─────────────────────────────────────────────────────────────────────────
 
 check_root() {
-    [[ "$EUID" -ne 0 ]] && { error "Run as root: sudo ./${SCRIPT_NAME}"; exit 1; }
+    # NOT `[[ ]] && { ...; exit 1; }` as a function's sole statement — when
+    # the whole function body is that one guard and it's called bare
+    # elsewhere, a false condition makes the FUNCTION return 1, which set -e
+    # treats as an ordinary command failure at the call site and aborts the
+    # script even on the "we ARE root, all good" path. Confirmed by an
+    # actual VM crash — see ARCHITECTURE.md. `if` doesn't have this problem:
+    # a false condition with no matching branch makes the whole `if`
+    # construct itself return 0.
+    if [[ "$EUID" -ne 0 ]]; then
+        error "Run as root: sudo ./${SCRIPT_NAME}"
+        exit 1
+    fi
 }
 
 check_arch_linux() {
