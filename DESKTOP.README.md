@@ -22,6 +22,9 @@ The spec's own dependency list — Wayland, systemd, PipeWire, NetworkManager, *
 | Performance monitor | [Vitals](https://extensions.gnome.org/extension/1460/vitals/) — real CPU/RAM/GPU/temp panel extension, not reimplemented |
 | Power modes | `power-profiles-daemon` — GNOME's native Performance/Balanced/Power Saver Quick Settings entry, no extension needed |
 | Color presets | 4 real palettes (FROST Blue/Noir/Aurora/Midnight), switchable via `frost-theme` — see [Color presets](#color-presets) below |
+| Clipboard manager | [Clipboard Indicator](https://extensions.gnome.org/extension/779/clipboard-indicator/) — real, established extension, 50-item history |
+| Notes | GNOME Notes (Bijiben) — a real app, not a floating always-on-top widget (GNOME has no built-in equivalent to a pinned sticky note) |
+| Screenshot & recording | GNOME Shell's own built-in tools — `PrtScn` for the screenshot UI, `Ctrl+Shift+Alt+R` for screen recording. No package to install, no competing tool added — see [Keyboard shortcuts](#keyboard-shortcuts) |
 
 This is the honest, buildable version of the spec's intent: FROST's own visual identity, on a foundation that's actually maintained by someone else and battle-tested by millions of GNOME users, rather than a bespoke shell nobody has run yet.
 
@@ -39,6 +42,8 @@ This is the honest, buildable version of the spec's intent: FROST's own visual i
 | `power-profiles-daemon` (power modes) | Package install + service enable only — the native GNOME Quick Settings entry it provides is well-established elsewhere, not separately re-verified here |
 | Vitals (performance monitor) | Package/dconf install only — not yet loaded into a live session the way `frost-shell` was |
 | `frost-desktop.sh`'s GDM fixes (`disable_motd_on_gdm`, `remove_gdm_arch_logo`) | **VM-confirmed** — applied live, screenshots show a clean greeter (no logo, no garbled text) |
+| Clipboard Indicator | **VM-confirmed** — installed via AUR, enabled via dconf, panel icon visible and rendering after a clean relogin |
+| GNOME Notes (Bijiben) | **VM-confirmed** — installed, `favorite-apps` dconf pin resolved correctly, icon visible in the dock |
 
 **Still open**: the FROST panel indicator's own hex icon (`icons/frost-hex.svg`) renders at a size/contrast that's hard to see against the dark panel in practice, even though the button itself is confirmed present and clickable (opens the FROST OS menu). Cosmetic, not functional — worth another pass with a bolder/filled glyph.
 
@@ -106,6 +111,10 @@ GTK4 apps pick up the new palette on next launch. GNOME Shell chrome (top bar, q
 | `Ctrl+Super+E` | 🥚 hidden — reveals a FROST easter egg notification |
 | `Super+A` | Quick Settings (GNOME default) |
 | `Super+V` | Notification list (GNOME default) |
+| `Super+.` (period) | Clipboard Indicator's history popup (its own default, not remapped) |
+| `PrtScn` | GNOME's built-in screenshot UI (full screen / selection / window) |
+| `Ctrl+Shift+PrtScn` | Screenshot straight to clipboard, no UI |
+| `Ctrl+Shift+Alt+R` | Start/stop GNOME's built-in screen recording — saved to `~/Videos`, a red dot appears in the top bar while recording |
 
 ## Accessibility
 

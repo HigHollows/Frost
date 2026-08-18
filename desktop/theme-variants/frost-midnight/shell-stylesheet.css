@@ -200,3 +200,13 @@ stage {
 .extension-vitals-panel-label {
     color: #00d9ff;
 }
+
+/* ── Clipboard Indicator ────────────────────────────────────────────
+ * UNVERIFIED class name, same caveat as Vitals above — falls under the
+ * generic #panel .panel-button rules regardless, this just recolors
+ * its popup menu's history entries to match the accent on hover. */
+
+.clipboard-indicator-hover-button:hover,
+.clipboard-history-item:hover {
+    background-color: rgba(77, 166, 255, 0.12);
+}

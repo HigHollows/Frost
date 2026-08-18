@@ -6,10 +6,10 @@
 # Iceblue GTK4/Libadwaita theme (plus 3 alternate color presets,
 # switchable via frost-theme — see desktop/tools/generate_theme_variants.py),
 # the frost-shell GNOME Shell extension, Dash to Dock + Blur my Shell +
-# Vitals (real, existing extensions — not reimplemented here),
-# power-profiles-daemon (native GNOME Power Mode toggle), Guake
-# (dropdown terminal), Nautilus, fonts (Inter, JetBrains Mono), Papirus
-# icons, and the FROST wallpaper.
+# Vitals + Clipboard Indicator (real, existing extensions — not
+# reimplemented here), power-profiles-daemon (native GNOME Power Mode
+# toggle), Guake (dropdown terminal), GNOME Notes, Nautilus, fonts
+# (Inter, JetBrains Mono), Papirus icons, and the FROST wallpaper.
 #
 # ⚠ This is an ALTERNATIVE to frost-phase3.sh's `--profile desktop`
 # (Xorg + i3 + lightdm) — a different, heavier, more integrated desktop
@@ -397,6 +397,21 @@ install_terminal() {
     install_tool "Guake" "guake" "" || true
 }
 
+install_productivity_tools() {
+    # The spec's "clipboard manager / floating notes / screenshot &
+    # recording" section, built the same way as everything else here:
+    # real, established GNOME tools configured and themed, not
+    # reimplemented. Screenshot + screen recording specifically need NO
+    # new package at all — GNOME Shell has both built in since ~42
+    # (PrtScn for the screenshot UI, Ctrl+Shift+Alt+R to start/stop a
+    # recording, saved to ~/Videos) — see DESKTOP.README.md's keyboard
+    # shortcut table rather than installing a competing tool for
+    # something the platform already does natively.
+    step "Clipboard manager, notes (real, existing extensions/apps)"
+    install_tool "Clipboard Indicator" "" "gnome-shell-extension-clipboard-indicator" || true
+    install_tool "GNOME Notes (Bijiben)" "gnome-notes" "" || true
+}
+
 apply_dconf_defaults() {
     step "Applying dconf defaults"
     [[ -z "$TARGET_USER" ]] && { warn "No target user — skipping dconf defaults (would apply to the wrong session)"; return 0; }
@@ -448,6 +463,7 @@ main() {
     install_performance_monitor
     install_power_profiles
     install_terminal
+    install_productivity_tools
     install_wallpaper
     apply_dconf_defaults
 
