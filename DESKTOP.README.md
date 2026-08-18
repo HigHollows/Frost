@@ -37,7 +37,7 @@ This is the honest, buildable version of the spec's intent: FROST's own visual i
 | `desktop/extension/.../extension.js` | **VM-validated (2026-08)**, `State: ACTIVE`, zero errors — the FROST panel menu and Steam Mode quick toggle both confirmed working live. Getting there took fixing three real runtime bugs Node's syntax check never could have caught (stale `shell-version`, missing `settings-schema`, wrong `addExternalIndicator()` contract) — see ARCHITECTURE.md Lesson 7 |
 | `desktop/extension/.../stylesheet.css` | `#panel`, `.quick-settings`, `.notification-banner`, `.overview`, `.search-entry`, `.dash` all VM-confirmed rendering correctly. The `#dashtodockContainer` hex-accent rules (added in the signature-identity pass) are newer and not yet re-verified the same way |
 | `desktop/config/dconf-frost-defaults.ini` | **VM-validated** — `dconf load` confirmed applying the theme/wallpaper/extensions live (see ARCHITECTURE.md Lesson 6 for a real bug that blocked this until fixed). The `org/guake/*` section is still lower-confidence — verify against the installed Guake version |
-| `desktop/wallpaper/frost-wallpaper.png` | Generated, viewed, and VM-confirmed rendering (hex-facet pattern added in the signature-identity pass) |
+| `desktop/wallpaper/frost-wallpaper.png` | **Designer-provided (2026-08)** — the crystalline "F" mark on the iceblue gradient, not the code-generated one. See `frost-wallpaper-source.png` for provenance and the Wallpaper section below for how it relates to `generate_wallpaper.py`. |
 | `desktop/theme-variants/*` + `frost-theme` CLI | **VM-confirmed** — switching to FROST Noir correctly updated GTK4 CSS, Shell CSS, and `accent-color`; live palette change confirmed after relogin |
 | `power-profiles-daemon` (power modes) | Package install + service enable only — the native GNOME Quick Settings entry it provides is well-established elsewhere, not separately re-verified here |
 | Vitals (performance monitor) | Package/dconf install only — not yet loaded into a live session the way `frost-shell` was |
@@ -100,7 +100,7 @@ GTK4 apps pick up the new palette on next launch. GNOME Shell chrome (top bar, q
 - **App-level colors**: edit `desktop/theme/gtk-4.0/gtk.css`, then `dconf write /org/gnome/desktop/interface/gtk-theme "'FROST'"` or just re-copy to `~/.config/gtk-4.0/gtk.css` (the path GTK4 always loads regardless of theme name — see the file's own header comment for why that's the reliable path).
 - **Shell chrome** (top bar, quick settings, notifications): edit `stylesheet.css`, then `Alt+F2` → `r` → Enter to reload the shell (X11 only — on Wayland, log out and back in).
 - **Dock behavior**: `dconf-frost-defaults.ini`'s `[org/gnome/shell/extensions/dash-to-dock]` section, or Dash to Dock's own GUI settings (right-click the dock → "Dash to Dock Settings").
-- **Wallpaper**: `python desktop/tools/generate_wallpaper.py` to regenerate from code (same reproducibility principle as `branding/tools/generate_assets.py`), or just drop in your own PNG and update the dconf `picture-uri`.
+- **Wallpaper**: the shipped `frost-wallpaper.png` is now a designer-provided asset (the crystalline "F" mark), not `generate_wallpaper.py`'s output — `frost-wallpaper-source.png` sits alongside it for provenance, same convention as `branding/logo/frost-logo-source.png`. `generate_wallpaper.py` still works as a from-code fallback/alternate (run it and it'll happily overwrite `frost-wallpaper.png` with its hex-facet-gradient version) — or just drop in your own PNG and update the dconf `picture-uri`.
 
 ## Keyboard shortcuts
 
@@ -151,7 +151,8 @@ desktop/
   config/
     dconf-frost-defaults.ini
   wallpaper/
-    frost-wallpaper.png
+    frost-wallpaper.png             shipped — designer-provided crystalline "F" mark
+    frost-wallpaper-source.png      the designer's original, kept for provenance
   theme-variants/                 generated: frost-blue/frost-noir/frost-aurora/frost-midnight
     frost-noir/gtk-4.0/gtk.css, shell-stylesheet.css, index.theme, accent-color
     ...

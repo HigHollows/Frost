@@ -1,6 +1,13 @@
 #!/usr/bin/env python3
-"""Generates the default FROST wallpaper — same reproducible-from-code
-approach as branding/tools/generate_assets.py. Regenerate anytime:
+"""Generates a code-driven fallback FROST wallpaper (hex-facet gradient).
+
+NOTE (2026-08): the wallpaper actually shipped in
+desktop/wallpaper/frost-wallpaper.png is now a designer-provided asset
+(the crystalline "F" mark — see frost-wallpaper-source.png alongside it
+for provenance, same convention as branding/logo/frost-logo-source.png),
+not this script's output. This generator is kept as a from-code
+fallback/alternate — running it will overwrite frost-wallpaper.png with
+its own hex-facet-gradient version:
 
     python desktop/tools/generate_wallpaper.py
 
