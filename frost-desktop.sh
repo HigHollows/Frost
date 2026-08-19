@@ -353,6 +353,19 @@ install_performance_monitor() {
     install_tool "Vitals" "" "gnome-shell-extension-vitals" || true
 }
 
+install_animation_tuning() {
+    step "Just Perfection (animation/transition tuning — real, existing extension)"
+    # A real settings-panel extension (its own preferences UI, opened
+    # via the Extensions app) for tuning Shell animation speed,
+    # workspace-switch style, hot corners, and similar behavior Mutter
+    # already has — not a new effect, refinement of what's there.
+    # Deliberately not "Burn My Windows" or similar effect-adding
+    # extensions here — those change what things look like, this only
+    # changes how fast/smooth the existing motion feels, which fits the
+    # sober mono direction better.
+    install_tool "Just Perfection" "" "gnome-shell-extension-just-perfection" || true
+}
+
 install_power_profiles() {
     step "Power profiles (Performance / Balanced / Power Saver)"
     # power-profiles-daemon is what makes GNOME's native "Power Mode"
@@ -500,6 +513,7 @@ main() {
     install_frost_shell_extension
     install_dock_and_blur
     install_performance_monitor
+    install_animation_tuning
     install_power_profiles
     install_terminal
     install_productivity_tools

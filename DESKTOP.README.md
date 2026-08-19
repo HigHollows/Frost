@@ -25,6 +25,8 @@ The spec's own dependency list — Wayland, systemd, PipeWire, NetworkManager, *
 | Clipboard manager | [Clipboard Indicator](https://extensions.gnome.org/extension/779/clipboard-indicator/) — real, established extension, 50-item history |
 | Notes | GNOME Notes (Bijiben) — a real app, not a floating always-on-top widget (GNOME has no built-in equivalent to a pinned sticky note) |
 | Screenshot & recording | GNOME Shell's own built-in tools — `PrtScn` for the screenshot UI, `Ctrl+Shift+Alt+R` for screen recording. No package to install, no competing tool added — see [Keyboard shortcuts](#keyboard-shortcuts) |
+| Animation/transition tuning | [Just Perfection](https://extensions.gnome.org/extension/3843/just-perfection/) — real settings-panel extension for Mutter/Shell's existing animation speed, workspace-switch style, hot corners, etc. Tunes what's already there rather than adding new visual effects, deliberately (kept in the sober-mono spirit rather than adding an effects extension like Burn My Windows) |
+| Dock reveal behavior | Dash to Dock's `require-pressure-to-show=false` — the dock appears as soon as the mouse touches the screen edge, not after a deliberate push-and-hold gesture (dash-to-dock's more cautious default) |
 
 This is the honest, buildable version of the spec's intent: FROST's own visual identity, on a foundation that's actually maintained by someone else and battle-tested by millions of GNOME users, rather than a bespoke shell nobody has run yet.
 
