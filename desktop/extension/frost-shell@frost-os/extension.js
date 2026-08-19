@@ -98,9 +98,38 @@ class FrostIndicator extends PanelMenu.Button {
         this.menu.addMenuItem(versionItem);
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
+        // Quick-launch shortcuts — the point of this menu (2026-08):
+        // give the top bar somewhere genuinely useful to click besides
+        // the FROST/Settings items it already had, without reimplementing
+        // a launcher (Super still opens the real one — see
+        // DESKTOP.README.md's overview/launcher note).
+        this._addLaunchItem('Terminal', ['guake', '-t']);
+        this._addLaunchItem('Files', ['nautilus']);
+        this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+
         const settingsItem = new PopupMenu.PopupMenuItem('Settings');
         settingsItem.connect('activate', () => runDetached(['gnome-control-center']));
         this.menu.addMenuItem(settingsItem);
+        this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+
+        // Lock/Suspend via loginctl/systemctl rather than a private Shell
+        // API: portable, works the same whether it's this menu, a
+        // terminal, or a keybinding calling it, and doesn't depend on
+        // internal Main.screenShield/session-mode plumbing that shifts
+        // between GNOME versions.
+        const lockItem = new PopupMenu.PopupMenuItem('Lock Screen');
+        lockItem.connect('activate', () => runDetached(['loginctl', 'lock-session']));
+        this.menu.addMenuItem(lockItem);
+
+        const suspendItem = new PopupMenu.PopupMenuItem('Suspend');
+        suspendItem.connect('activate', () => runDetached(['systemctl', 'suspend']));
+        this.menu.addMenuItem(suspendItem);
+    }
+
+    _addLaunchItem(label, argv) {
+        const item = new PopupMenu.PopupMenuItem(label);
+        item.connect('activate', () => runDetached(argv));
+        this.menu.addMenuItem(item);
     }
 });
 
