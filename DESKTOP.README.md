@@ -21,7 +21,7 @@ The spec's own dependency list — Wayland, systemd, PipeWire, NetworkManager, *
 | FROST-specific bits | `frost-shell@frost-os` — a small custom extension: Steam Mode quick toggle, a panel indicator, the hidden easter egg |
 | Performance monitor | [Vitals](https://extensions.gnome.org/extension/1460/vitals/) — real CPU/RAM/GPU/temp panel extension, not reimplemented |
 | Power modes | `power-profiles-daemon` — GNOME's native Performance/Balanced/Power Saver Quick Settings entry, no extension needed |
-| Color presets | 4 real palettes (FROST Blue/Noir/Aurora/Midnight), switchable via `frost-theme` — see [Color presets](#color-presets) below |
+| Color presets | Sober monochrome default (FROST Mono) + 3 muted accent presets (Blue/Green/Mustard, no neon), switchable via `frost-theme` — see [Color presets](#color-presets) below |
 | Clipboard manager | [Clipboard Indicator](https://extensions.gnome.org/extension/779/clipboard-indicator/) — real, established extension, 50-item history |
 | Notes | GNOME Notes (Bijiben) — a real app, not a floating always-on-top widget (GNOME has no built-in equivalent to a pinned sticky note) |
 | Screenshot & recording | GNOME Shell's own built-in tools — `PrtScn` for the screenshot UI, `Ctrl+Shift+Alt+R` for screen recording. No package to install, no competing tool added — see [Keyboard shortcuts](#keyboard-shortcuts) |
@@ -38,7 +38,7 @@ This is the honest, buildable version of the spec's intent: FROST's own visual i
 | `desktop/extension/.../stylesheet.css` | `#panel`, `.quick-settings`, `.notification-banner`, `.overview`, `.search-entry`, `.dash` all VM-confirmed rendering correctly. The `#dashtodockContainer` hex-accent rules (added in the signature-identity pass) are newer and not yet re-verified the same way |
 | `desktop/config/dconf-frost-defaults.ini` | **VM-validated** — `dconf load` confirmed applying the theme/wallpaper/extensions live (see ARCHITECTURE.md Lesson 6 for a real bug that blocked this until fixed). The `org/guake/*` section is still lower-confidence — verify against the installed Guake version |
 | `desktop/wallpaper/frost-wallpaper.png` | **Designer-provided (2026-08)** — the crystalline "F" mark on the iceblue gradient, not the code-generated one. See `frost-wallpaper-source.png` for provenance and the Wallpaper section below for how it relates to `generate_wallpaper.py`. |
-| `desktop/theme-variants/*` + `frost-theme` CLI | **VM-confirmed** — switching to FROST Noir correctly updated GTK4 CSS, Shell CSS, and `accent-color`; live palette change confirmed after relogin |
+| `desktop/theme-variants/*` + `frost-theme` CLI | **VM-confirmed** — switching presets correctly updated GTK4 CSS, Shell CSS, and `accent-color`; live palette change confirmed after relogin |
 | `power-profiles-daemon` (power modes) | Package install + service enable only — the native GNOME Quick Settings entry it provides is well-established elsewhere, not separately re-verified here |
 | Vitals (performance monitor) | Package/dconf install only — not yet loaded into a live session the way `frost-shell` was |
 | `frost-desktop.sh`'s GDM fixes (`disable_motd_on_gdm`, `remove_gdm_arch_logo`) | **VM-confirmed** — applied live, screenshots show a clean greeter (no logo, no garbled text) |
@@ -60,40 +60,42 @@ Depends on `frost-phase2.sh` (AUR helper — Dash to Dock/Blur my Shell may need
 
 ## Palette
 
+**Redesigned (2026-08 mini-refonte)**: dropped the neon-cyan look for a sober monochrome default — near-black/white/gray, no hue in the accent. FROST Mono below is the canonical source; FROST Blue/Green/Mustard are the same exact background/text pair with only the accent hue swapped — see [Color presets](#color-presets).
+
 | Token | Hex | Use |
 |---|---|---|
-| `frost-bg-dark` | `#0f1419` | Window/base background |
-| `frost-surface-1` | `#1a2332` | Panels, headerbars, dock |
-| `frost-surface-2` | `#243447` | Cards, entries, borders |
-| `frost-accent` | `#00d9ff` | Accent, focus rings, active states |
-| `frost-accent-2` | `#4da6ff` | Secondary accent |
-| `frost-text-primary` | `#f0f4f8` | Primary text (~17:1 contrast on bg — AAA) |
-| `frost-text-secondary` | `#a8b8c8` | Secondary/dim text (~8.6:1 — AA) |
-| `frost-danger` | `#ff6b6b` | Destructive actions |
-| `frost-success` | `#51cf66` | Success states |
+| `frost-bg-dark` | `#0d0d0d` | Window/base background |
+| `frost-surface-1` | `#1a1a1a` | Panels, headerbars, dock |
+| `frost-surface-2` | `#262626` | Cards, entries, borders |
+| `frost-accent` | `#e6e6e6` | Accent, focus rings, active states (near-white — genuinely monochrome) |
+| `frost-accent-2` | `#b0b0b0` | Secondary accent |
+| `frost-text-primary` | `#f2f2f2` | Primary text (~18:1 contrast on bg — AAA) |
+| `frost-text-secondary` | `#9a9a9a` | Secondary/dim text (~7.6:1 — AA) |
+| `frost-danger` | `#c9524f` | Destructive actions (muted red, not neon) |
+| `frost-success` | `#4f9c68` | Success states (muted green, not neon) |
 
 Defined once in `desktop/theme/gtk-4.0/gtk.css` (`@define-color`) and mirrored in `desktop/extension/frost-shell@frost-os/stylesheet.css` (St CSS custom properties) — if you change the palette, update both.
 
 ## Color presets
 
-FROST Blue (above) isn't the only option — `frost-desktop.sh` also installs 3 alternate presets, generated from the canonical FROST Blue files by `desktop/tools/generate_theme_variants.py` (single source of truth for *shape*; only the palette is substituted per preset — see that script's own docs for why):
+FROST Mono (above) isn't the only option — `frost-desktop.sh` also installs 3 alternate accents, generated from the canonical FROST Mono files by `desktop/tools/generate_theme_variants.py` (single source of truth for *shape*; only accent/accent_2 are substituted per preset, background/text stay identical across all of them — see that script's own docs for why):
 
 | Preset | Background | Accent | Notes |
 |---|---|---|---|
-| **FROST Blue** (default) | `#0f1419` | `#00d9ff` cyan | The palette documented above |
-| **FROST Noir** | `#000000` pure black | `#cccccc` gray | Monochrome, no color at all |
-| **FROST Aurora** | `#0f1419` | `#ff00ff` magenta / `#00ff88` green | Two-tone, high contrast |
-| **FROST Midnight** | `#0a0e12` (darker than Blue) | `#4da6ff` blue | Subtler, cooler than Blue |
+| **FROST Mono** (default) | `#0d0d0d` | `#e6e6e6` near-white | The palette documented above — genuinely no hue |
+| **FROST Blue** | `#0d0d0d` (same as Mono) | `#4a72a8` muted slate blue | Not the old neon cyan — a desaturated, professional blue |
+| **FROST Green** | `#0d0d0d` (same as Mono) | `#4a8f66` muted sage green | |
+| **FROST Mustard** | `#0d0d0d` (same as Mono) | `#b8923f` muted mustard/gold | |
 
 Switch with the installed `frost-theme` CLI:
 
 ```bash
 frost-theme list              # see what's installed, and which is active
-frost-theme frost-noir         # switch — updates GTK4 apps + Shell chrome + accent-color
+frost-theme frost-blue         # switch — updates GTK4 apps + Shell chrome + accent-color
 frost-theme current            # show the active preset
 ```
 
-GTK4 apps pick up the new palette on next launch. GNOME Shell chrome (top bar, quick settings, notifications) needs a reload: `Alt+F2` → `r` → Enter on X11, or a full logout/login on Wayland (Mutter doesn't support live Shell CSS reload on Wayland — a real GNOME limitation, not a FROST one). **VM-confirmed (2026-08)**: switching to FROST Noir correctly updated `org.gnome.desktop.interface accent-color` and both CSS files; a full relogin showed the new palette live.
+GTK4 apps pick up the new palette on next launch. GNOME Shell chrome (top bar, quick settings, notifications) needs a reload: `Alt+F2` → `r` → Enter on X11, or a full logout/login on Wayland (Mutter doesn't support live Shell CSS reload on Wayland — a real GNOME limitation, not a FROST one). **VM-confirmed (2026-08, both the original 4-preset system and the mono redesign)**: switching presets correctly updated `org.gnome.desktop.interface accent-color` and both CSS files each time; a full relogin showed the new palette live.
 
 ## Customizing
 
@@ -153,8 +155,8 @@ desktop/
   wallpaper/
     frost-wallpaper.png             shipped — designer-provided crystalline "F" mark
     frost-wallpaper-source.png      the designer's original, kept for provenance
-  theme-variants/                 generated: frost-blue/frost-noir/frost-aurora/frost-midnight
-    frost-noir/gtk-4.0/gtk.css, shell-stylesheet.css, index.theme, accent-color
+  theme-variants/                 generated: frost-mono/frost-blue/frost-green/frost-mustard
+    frost-blue/gtk-4.0/gtk.css, shell-stylesheet.css, index.theme, accent-color
     ...
   tools/
     generate_wallpaper.py

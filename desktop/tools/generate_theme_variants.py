@@ -1,9 +1,19 @@
 #!/usr/bin/env python3
 """Generates FROST's alternate color presets (theme variants) from the
-canonical FROST Blue source files — same reproducible-from-code approach
+canonical FROST Mono source files — same reproducible-from-code approach
 as generate_wallpaper.py. Regenerate anytime:
 
     python desktop/tools/generate_theme_variants.py
+
+REDESIGN NOTE (2026-08 mini-refonte): the preset lineup used to be four
+loosely-related palettes (Blue/Noir/Aurora/Midnight), and the default
+leaned neon (#00d9ff cyan everywhere). It's now one sober neutral base
+— frost-mono, the canonical source files themselves, near-black/white/
+gray with no hue in the accent — plus three muted (never neon) accent
+swaps: frost-blue, frost-green, frost-mustard. All four presets share
+the *exact same* background/surface/text colors; only accent/accent_2
+differ. That's a real "pick an accent chip" system, not four unrelated
+themes wearing the same shape.
 
 Why generated rather than hand-written: desktop/theme/gtk-4.0/gtk.css and
 desktop/extension/frost-shell@frost-os/stylesheet.css are the single
@@ -32,67 +42,50 @@ INDEX_THEME_BASE = os.path.join(HERE, "..", "theme", "index.theme")
 SHELL_BASE = os.path.join(HERE, "..", "extension", "frost-shell@frost-os", "stylesheet.css")
 OUT_DIR = os.path.join(HERE, "..", "theme-variants")
 
-# Canonical (FROST Blue) palette — must match desktop/theme/gtk-4.0/gtk.css
+# Canonical (FROST Mono) palette — must match desktop/theme/gtk-4.0/gtk.css
 # and stylesheet.css's `stage {}` block exactly, or the substitution below
 # silently does nothing.
 CANONICAL = {
-    "bg_dark": "#0f1419",
-    "surface_1": "#1a2332",
-    "surface_2": "#243447",
-    "accent": "#00d9ff",
-    "accent_2": "#4da6ff",
-    "text_primary": "#f0f4f8",
-    "text_secondary": "#a8b8c8",
+    "bg_dark": "#0d0d0d",
+    "surface_1": "#1a1a1a",
+    "surface_2": "#262626",
+    "accent": "#e6e6e6",
+    "accent_2": "#b0b0b0",
+    "text_primary": "#f2f2f2",
+    "text_secondary": "#9a9a9a",
 }
 
 # danger/success are semantic (error/success states) and deliberately
 # constant across every preset — a red error stays legible-as-an-error
 # regardless of which accent color the user picked.
+#
+# Every preset below shares CANONICAL's bg_dark/surface_1/surface_2/
+# text_primary/text_secondary — only accent/accent_2 change. Deliberate:
+# this is meant to read as "one sober theme, pick your accent chip", not
+# four different moods.
+
+_BASE = {k: v for k, v in CANONICAL.items() if k not in ("accent", "accent_2")}
 
 PRESETS = {
-    "frost-blue": {
-        "display_name": "FROST Blue",
+    "frost-mono": {
+        "display_name": "FROST Mono",
         "palette": CANONICAL,  # identity — this *is* the canonical file
-        "accent_color": "blue",
-    },
-    "frost-noir": {
-        "display_name": "FROST Noir",
-        "palette": {
-            "bg_dark": "#000000",
-            "surface_1": "#141414",
-            "surface_2": "#1f1f1f",
-            "accent": "#cccccc",
-            "accent_2": "#e0e0e0",
-            "text_primary": "#ffffff",
-            "text_secondary": "#b3b3b3",
-        },
         "accent_color": "slate",
     },
-    "frost-aurora": {
-        "display_name": "FROST Aurora",
-        "palette": {
-            "bg_dark": "#0f1419",
-            "surface_1": "#1a2332",
-            "surface_2": "#243447",
-            "accent": "#ff00ff",
-            "accent_2": "#00ff88",
-            "text_primary": "#f0f4f8",
-            "text_secondary": "#a8b8c8",
-        },
-        "accent_color": "purple",
-    },
-    "frost-midnight": {
-        "display_name": "FROST Midnight",
-        "palette": {
-            "bg_dark": "#0a0e12",
-            "surface_1": "#141a22",
-            "surface_2": "#1e2733",
-            "accent": "#4da6ff",
-            "accent_2": "#00d9ff",
-            "text_primary": "#e8ecf0",
-            "text_secondary": "#a0aab5",
-        },
+    "frost-blue": {
+        "display_name": "FROST Blue",
+        "palette": {**_BASE, "accent": "#4a72a8", "accent_2": "#6f93bf"},
         "accent_color": "blue",
+    },
+    "frost-green": {
+        "display_name": "FROST Green",
+        "palette": {**_BASE, "accent": "#4a8f66", "accent_2": "#6fab87"},
+        "accent_color": "green",
+    },
+    "frost-mustard": {
+        "display_name": "FROST Mustard",
+        "palette": {**_BASE, "accent": "#b8923f", "accent_2": "#cfab63"},
+        "accent_color": "yellow",
     },
 }
 

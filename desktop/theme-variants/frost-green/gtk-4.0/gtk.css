@@ -1,7 +1,17 @@
-/* FROST Iceblue — GTK4/Libadwaita theme
+/* FROST — GTK4/Libadwaita theme (sober monochrome, 2026-08 mini-refonte)
  *
  * Installed to ~/.config/gtk-4.0/gtk.css (per-user) or
  * /usr/share/themes/FROST/gtk-4.0/gtk.css (system, via frost-desktop.sh).
+ *
+ * REDESIGN NOTE: the original palette (cyan #00d9ff "Iceblue") read as
+ * neon rather than professional. This file is now the canonical
+ * MONOCHROME default — near-black/white/gray, no hue at all in the
+ * accent — and the single source of truth `generate_theme_variants.py`
+ * substitutes to produce the color presets (frost-blue, frost-green,
+ * frost-mustard). Every preset shares this exact same neutral
+ * background/text palette; only the accent hue changes — see that
+ * script for why (a real "swap the accent chip" system, not four
+ * unrelated palettes).
  *
  * HONEST SCOPE: Libadwaita deliberately limits how far app theming can
  * go compared to old GTK3 "theme engines" — this is a GNOME design
@@ -17,17 +27,18 @@
  * which IS fully themeable because it's compositor chrome, not an app.
  */
 
-/* ── FROST Iceblue palette ────────────────────────────────────────── */
+/* ── FROST palette (this file = the FROST Mono default; other presets
+   substitute accent/accent_2 only — see generate_theme_variants.py) ── */
 
-@define-color frost_bg_dark        #0f1419;
-@define-color frost_surface_1      #1a2332;
-@define-color frost_surface_2      #243447;
-@define-color frost_accent         #ff00ff;
-@define-color frost_accent_2       #00ff88;
-@define-color frost_text_primary   #f0f4f8;
-@define-color frost_text_secondary #a8b8c8;
-@define-color frost_danger         #ff6b6b;
-@define-color frost_success        #51cf66;
+@define-color frost_bg_dark        #0d0d0d;
+@define-color frost_surface_1      #1a1a1a;
+@define-color frost_surface_2      #262626;
+@define-color frost_accent         #4a8f66;
+@define-color frost_accent_2       #6fab87;
+@define-color frost_text_primary   #f2f2f2;
+@define-color frost_text_secondary #9a9a9a;
+@define-color frost_danger         #c9524f;
+@define-color frost_success        #4f9c68;
 
 /* Libadwaita's own named colors — remapped so every app that respects
    them (most do) picks up the palette without per-widget overrides. */
@@ -65,7 +76,7 @@ window,
    (there's no separate window-manager-level CSS surface to do this
    from, since Mutter draws CSD apps using each app's own GTK theme). */
 window.background:not(:backdrop) {
-    box-shadow: 0 0 20px alpha(@frost_accent, 0.35), 0 16px 48px alpha(black, 0.5);
+    box-shadow: 0 0 16px alpha(@frost_accent, 0.22), 0 16px 48px alpha(black, 0.5);
 }
 
 window.background:backdrop {
@@ -119,14 +130,13 @@ popover.background {
 }
 
 /* ── Focus & contrast (WCAG 2.1 AA) ─────────────────────────────────
-   FROST Blue: frost_text_primary (#f0f4f8) on frost_bg_dark (#0f1419)
-   is ~17:1 — comfortably AA/AAA for normal text; frost_text_secondary
-   (#a8b8c8) on the same background is ~8.6:1, still AA for small text.
-   This is generated into every color preset (see
-   desktop/tools/generate_theme_variants.py) — each preset's own
-   text/background pair was chosen to stay in the same AA-or-better
-   range, but the exact ratios above are specific to FROST Blue, not
-   a guarantee recalculated per preset. */
+   frost_text_primary (#f2f2f2) on frost_bg_dark (#0d0d0d) is ~18:1 —
+   comfortably AA/AAA for normal text; frost_text_secondary (#9a9a9a)
+   on the same background is ~7.6:1, still AA for small text. Every
+   color preset shares this exact bg/text pair (see
+   desktop/tools/generate_theme_variants.py) — only the accent hue
+   changes between presets, so these ratios hold everywhere, not just
+   for the default. */
 
 label.dim-label {
     color: @frost_text_secondary;

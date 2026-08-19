@@ -13,17 +13,17 @@
 :root {
   --page-bg: #06090c;
   --page-bg-2: #0a0f14;
-  --ink: #f0f4f8;
-  --ink-dim: #a8b8c8;
+  --ink: #f2f2f2;
+  --ink-dim: #9a9a9a;
   --ink-faint: #5b6b7d;
 
-  --os-bg: #0f1419;
-  --os-surface-1: #1a2332;
-  --os-surface-2: #243447;
-  --accent: #00d9ff;
-  --accent-2: #4da6ff;
-  --danger: #ff6b6b;
-  --success: #51cf66;
+  --os-bg: #0d0d0d;
+  --os-surface-1: #1a1a1a;
+  --os-surface-2: #262626;
+  --accent: #e6e6e6;
+  --accent-2: #b0b0b0;
+  --danger: #c9524f;
+  --success: #4f9c68;
 
   --line: rgba(240, 244, 248, 0.08);
   --line-strong: rgba(240, 244, 248, 0.14);
@@ -220,7 +220,7 @@ body {
 .topbar svg { display:block; }
 .badge {
   background: var(--danger);
-  color: #0f1419;
+  color: #0d0d0d;
   font-family: var(--font-mono);
   font-size: 9px;
   font-weight: 700;
@@ -441,12 +441,12 @@ footer a { color: var(--accent-2); text-decoration: none; }
       <h1>FROST OS Desktop</h1>
       <p>GNOME Shell, re-skinned in FROST Iceblue: dark, minimalist, one accent. These are static mockups built to spec — see <b style="color:var(--ink)">DESKTOP.README.md</b> for what's real code, what's an existing extension being configured, and what still needs a real GNOME session to verify.</p>
       <div class="palette-row">
-        <div class="swatch"><i style="background:#0f1419"></i>bg-dark</div>
-        <div class="swatch"><i style="background:#1a2332"></i>surface-1</div>
-        <div class="swatch"><i style="background:#243447"></i>surface-2</div>
-        <div class="swatch"><i style="background:#00d9ff"></i>accent</div>
-        <div class="swatch"><i style="background:#4da6ff"></i>accent-2</div>
-        <div class="swatch"><i style="background:#f0f4f8"></i>text</div>
+        <div class="swatch"><i style="background:#0d0d0d"></i>bg-dark</div>
+        <div class="swatch"><i style="background:#1a1a1a"></i>surface-1</div>
+        <div class="swatch"><i style="background:#262626"></i>surface-2</div>
+        <div class="swatch"><i style="background:#e6e6e6"></i>accent</div>
+        <div class="swatch"><i style="background:#b0b0b0"></i>accent-2</div>
+        <div class="swatch"><i style="background:#f2f2f2"></i>text</div>
       </div>
     </div>
   </div>
@@ -479,18 +479,18 @@ footer a { color: var(--accent-2); text-decoration: none; }
         </div>
       </div>
       <div class="desktop-labels">
-        <div class="dtop-icon"><div class="box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00d9ff" stroke-width="2"><path d="M3 7l3-4h5l2 3h8v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7z"/></svg></div><span>Projects</span></div>
-        <div class="dtop-icon"><div class="box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f0f4f8" stroke-width="2"><path d="M14 3v5h5"/><path d="M6 3h8l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/></svg></div><span>Notes.txt</span></div>
+        <div class="dtop-icon"><div class="box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e6e6e6" stroke-width="2"><path d="M3 7l3-4h5l2 3h8v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7z"/></svg></div><span>Projects</span></div>
+        <div class="dtop-icon"><div class="box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f2f2f2" stroke-width="2"><path d="M14 3v5h5"/><path d="M6 3h8l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/></svg></div><span>Notes.txt</span></div>
       </div>
       <div class="dock-wrap">
         <div class="dock">
-          <div class="dock-icon hot"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00d9ff" stroke-width="2"><path d="M3 7l3-4h5l2 3h8v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7z"/></svg><span class="run"></span></div>
-          <div class="dock-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f0f4f8" stroke-width="2"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18M8 4v14"/></svg></div>
-          <div class="dock-icon hot"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00d9ff" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11"/></svg><span class="run"></span></div>
-          <div class="dock-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f0f4f8" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18"/></svg></div>
-          <div class="dock-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f0f4f8" stroke-width="2"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M8 3l4 3l4-3"/></svg></div>
+          <div class="dock-icon hot"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e6e6e6" stroke-width="2"><path d="M3 7l3-4h5l2 3h8v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7z"/></svg><span class="run"></span></div>
+          <div class="dock-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f2f2f2" stroke-width="2"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18M8 4v14"/></svg></div>
+          <div class="dock-icon hot"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e6e6e6" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11"/></svg><span class="run"></span></div>
+          <div class="dock-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f2f2f2" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18"/></svg></div>
+          <div class="dock-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f2f2f2" stroke-width="2"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M8 3l4 3l4-3"/></svg></div>
           <div class="dock-sep"></div>
-          <div class="dock-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a8b8c8" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h11"/></svg></div>
+          <div class="dock-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9a9a9a" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h11"/></svg></div>
         </div>
       </div>
     </div>
@@ -516,13 +516,13 @@ footer a { color: var(--accent-2); text-decoration: none; }
       </div>
       <div class="dock-wrap">
         <div class="dock">
-          <div class="dock-icon hot"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00d9ff" stroke-width="2"><path d="M3 7l3-4h5l2 3h8v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7z"/></svg><span class="run"></span></div>
-          <div class="dock-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f0f4f8" stroke-width="2"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18M8 4v14"/></svg></div>
-          <div class="dock-icon hot"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00d9ff" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11"/></svg><span class="run"></span></div>
-          <div class="dock-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f0f4f8" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18"/></svg></div>
-          <div class="dock-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f0f4f8" stroke-width="2"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M8 3l4 3l4-3"/></svg></div>
+          <div class="dock-icon hot"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e6e6e6" stroke-width="2"><path d="M3 7l3-4h5l2 3h8v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7z"/></svg><span class="run"></span></div>
+          <div class="dock-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f2f2f2" stroke-width="2"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18M8 4v14"/></svg></div>
+          <div class="dock-icon hot"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e6e6e6" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11"/></svg><span class="run"></span></div>
+          <div class="dock-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f2f2f2" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18"/></svg></div>
+          <div class="dock-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f2f2f2" stroke-width="2"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M8 3l4 3l4-3"/></svg></div>
           <div class="dock-sep"></div>
-          <div class="dock-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a8b8c8" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h11"/></svg></div>
+          <div class="dock-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9a9a9a" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h11"/></svg></div>
         </div>
       </div>
     </div>
@@ -542,7 +542,7 @@ footer a { color: var(--accent-2); text-decoration: none; }
         <div class="topbar-group topbar-item">Wed 14:32</div>
         <div class="topbar-group">
           <div class="topbar-item muted"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 8.5a16 16 0 0 1 20 0"/><path d="M5.5 12a11 11 0 0 1 13 0"/><path d="M9 15.5a6 6 0 0 1 6 0"/><circle cx="12" cy="19" r="1" fill="currentColor" stroke="none"/></svg></div>
-          <div class="topbar-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00d9ff" stroke-width="2"><rect x="2" y="7" width="18" height="10" rx="2"/><path d="M22 10v4"/></svg>84%</div>
+          <div class="topbar-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e6e6e6" stroke-width="2"><rect x="2" y="7" width="18" height="10" rx="2"/><path d="M22 10v4"/></svg>84%</div>
         </div>
       </div>
       <div class="qs-panel">
@@ -579,7 +579,7 @@ footer a { color: var(--accent-2); text-decoration: none; }
       <div class="topbar">
         <div class="topbar-group"><div class="brand"><span class="dot"></span>Files</div></div>
         <div class="topbar-group topbar-item">Wed 14:32</div>
-        <div class="topbar-group"><div class="topbar-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00d9ff" stroke-width="2"><rect x="2" y="7" width="18" height="10" rx="2"/><path d="M22 10v4"/></svg>84%</div></div>
+        <div class="topbar-group"><div class="topbar-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e6e6e6" stroke-width="2"><rect x="2" y="7" width="18" height="10" rx="2"/><path d="M22 10v4"/></svg>84%</div></div>
       </div>
       <div class="window" style="inset: 34px 24px 34px;">
         <div class="win-titlebar"><div class="win-dots"><span></span><span></span><span></span></div><div class="win-title">Files</div><div style="width:44px"></div></div>
@@ -594,11 +594,11 @@ footer a { color: var(--accent-2); text-decoration: none; }
           <div class="fm-main">
             <div class="fm-crumbs"><b>Home</b> / Projects / frost</div>
             <div class="fm-grid">
-              <div class="fm-file"><div class="box" style="background:rgba(0,217,255,0.14)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00d9ff" stroke-width="2"><path d="M3 7l3-4h5l2 3h8v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7z"/></svg></div><span>branding</span></div>
-              <div class="fm-file"><div class="box" style="background:rgba(0,217,255,0.14)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00d9ff" stroke-width="2"><path d="M3 7l3-4h5l2 3h8v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7z"/></svg></div><span>desktop</span></div>
-              <div class="fm-file"><div class="box" style="background:var(--os-surface-2)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f0f4f8" stroke-width="2"><path d="M14 3v5h5"/><path d="M6 3h8l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/></svg></div><span>README.md</span></div>
-              <div class="fm-file"><div class="box" style="background:var(--os-surface-2)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#51cf66" stroke-width="2"><path d="M14 3v5h5"/><path d="M6 3h8l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 13l2 2 4-4"/></svg></div><span>frost-deploy.sh</span></div>
-              <div class="fm-file"><div class="box" style="background:var(--os-surface-2)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f0f4f8" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div><span>wallpaper.png</span></div>
+              <div class="fm-file"><div class="box" style="background:rgba(0,217,255,0.14)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e6e6e6" stroke-width="2"><path d="M3 7l3-4h5l2 3h8v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7z"/></svg></div><span>branding</span></div>
+              <div class="fm-file"><div class="box" style="background:rgba(0,217,255,0.14)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e6e6e6" stroke-width="2"><path d="M3 7l3-4h5l2 3h8v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7z"/></svg></div><span>desktop</span></div>
+              <div class="fm-file"><div class="box" style="background:var(--os-surface-2)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f2f2f2" stroke-width="2"><path d="M14 3v5h5"/><path d="M6 3h8l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/></svg></div><span>README.md</span></div>
+              <div class="fm-file"><div class="box" style="background:var(--os-surface-2)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4f9c68" stroke-width="2"><path d="M14 3v5h5"/><path d="M6 3h8l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 13l2 2 4-4"/></svg></div><span>frost-deploy.sh</span></div>
+              <div class="fm-file"><div class="box" style="background:var(--os-surface-2)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f2f2f2" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div><span>wallpaper.png</span></div>
             </div>
           </div>
         </div>
@@ -622,17 +622,17 @@ footer a { color: var(--accent-2); text-decoration: none; }
       </div>
       <div class="notif-stack">
         <div class="notif">
-          <div class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00d9ff" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+          <div class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#e6e6e6" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
           <div class="body"><div class="t">FROST updates available</div><div class="d">3 update(s) pending (2 official, 1 AUR)</div></div>
           <div class="time">now</div>
         </div>
         <div class="notif">
-          <div class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#51cf66" stroke-width="2"><path d="M9 12l2 2 4-4M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg></div>
+          <div class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4f9c68" stroke-width="2"><path d="M9 12l2 2 4-4M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg></div>
           <div class="body"><div class="t">Security audit clean</div><div class="d">firewall active · fail2ban running · 0 issues</div></div>
           <div class="time">2m</div>
         </div>
         <div class="notif" style="opacity:.6">
-          <div class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a8b8c8" stroke-width="2"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M12 8v4l3 3"/></svg></div>
+          <div class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9a9a9a" stroke-width="2"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M12 8v4l3 3"/></svg></div>
           <div class="body"><div class="t">Build finished</div><div class="d">frost-deploy.sh · 7/7 phases · 14m 02s</div></div>
           <div class="time">9m</div>
         </div>
@@ -674,7 +674,7 @@ footer a { color: var(--accent-2); text-decoration: none; }
       <div class="topbar">
         <div class="topbar-group"><div class="brand"><span class="dot"></span>Settings</div></div>
         <div class="topbar-group topbar-item">Wed 14:32</div>
-        <div class="topbar-group"><div class="topbar-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00d9ff" stroke-width="2"><rect x="2" y="7" width="18" height="10" rx="2"/><path d="M22 10v4"/></svg>84%</div></div>
+        <div class="topbar-group"><div class="topbar-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e6e6e6" stroke-width="2"><rect x="2" y="7" width="18" height="10" rx="2"/><path d="M22 10v4"/></svg>84%</div></div>
       </div>
       <div class="window" style="inset: 34px 24px 34px;">
         <div class="win-titlebar"><div class="win-dots"><span></span><span></span><span></span></div><div class="win-title">Settings</div><div style="width:44px"></div></div>
@@ -690,11 +690,11 @@ footer a { color: var(--accent-2); text-decoration: none; }
             <h3>Appearance</h3>
             <div class="st-row">
               <div class="l"><div class="t">Style</div><div class="d">FROST Iceblue — dark</div></div>
-              <div class="st-swatches"><i style="background:#0f1419" class="sel"></i><i style="background:#f0f4f8"></i></div>
+              <div class="st-swatches"><i style="background:#0d0d0d" class="sel"></i><i style="background:#f2f2f2"></i></div>
             </div>
             <div class="st-row">
-              <div class="l"><div class="t">Accent color</div><div class="d">Closest system preset to #00d9ff</div></div>
-              <div class="st-swatches"><i style="background:#00d9ff" class="sel"></i><i style="background:#4da6ff"></i><i style="background:#51cf66"></i><i style="background:#ff6b6b"></i></div>
+              <div class="l"><div class="t">Accent color</div><div class="d">Closest system preset to #e6e6e6</div></div>
+              <div class="st-swatches"><i style="background:#e6e6e6" class="sel"></i><i style="background:#b0b0b0"></i><i style="background:#4f9c68"></i><i style="background:#c9524f"></i></div>
             </div>
             <div class="st-row">
               <div class="l"><div class="t">Reduce animations</div><div class="d">org.gnome.desktop.interface enable-animations</div></div>

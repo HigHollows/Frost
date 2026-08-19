@@ -75,7 +75,7 @@ Full flag reference and design notes for each phase:
 - [SECURITY.README.md](SECURITY.README.md) — Security & Hacking Tools pack: pentest toolkit, firewall, VPN, SSH hardening
 - [GAMING.README.md](GAMING.README.md) — Gaming & Dev Stack pack: Steam/Lutris/Heroic, languages/DBs/IDEs, performance tuning, `frost --mode`
 - [DEPLOY.README.md](DEPLOY.README.md) — Deployment & Auto-Update pack: master orchestrator, systemd timers, config, uninstall
-- [DESKTOP.README.md](DESKTOP.README.md) — FROST OS Desktop: GNOME Shell + FROST Iceblue theme, honest scope notes
+- [DESKTOP.README.md](DESKTOP.README.md) — FROST OS Desktop: GNOME Shell + FROST Mono theme, honest scope notes
 
 ## Requirements
 
@@ -98,7 +98,7 @@ frost-deploy.sh                    Master orchestrator — chains all six script
 frost-update.sh                     Update checker/applier (installed to /opt/frost/bin by deploy)
 frost-status.sh                      Health check / monitor daemon
 frost-uninstall.sh                    Clean removal
-frost-desktop.sh                        FROST OS Desktop — GNOME Shell + Iceblue theme (optional, alternative to Phase 3's i3 profile)
+frost-desktop.sh                        FROST OS Desktop — GNOME Shell + FROST Mono theme (optional, alternative to Phase 3's i3 profile)
 frost-build.README.md         Phase 1 docs
 frost-phase2.README.md        Phase 2 docs
 frost-phase3.README.md        Phase 3 docs
