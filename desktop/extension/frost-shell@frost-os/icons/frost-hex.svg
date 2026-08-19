@@ -1,21 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- FROST panel indicator icon — a hexagon (the crystalline motif used
-     throughout the theme, echoing an ice-crystal facet) with a small
-     snowflake glyph inside. Loaded directly by path in extension.js
-     (Gio.icon_new_for_string), not through the icon theme's symbolic
-     recolor pipeline, so colors are baked in rather than inherited —
-     simpler and more reliable than fighting GNOME's symbolic-icon
-     lookup rules for a file that isn't installed into hicolor/. -->
+<!-- FROST panel indicator icon — a solid hexagon badge (the crystalline
+     motif used throughout the theme — same hex-facet mark as the
+     wallpaper's "F" logo, simplified to read at panel size). Loaded
+     directly by path in extension.js (Gio.icon_new_for_string), not
+     through the icon theme's symbolic recolor pipeline, so colors are
+     baked in rather than inherited — simpler and more reliable than
+     fighting GNOME's symbolic-icon lookup rules for a file that isn't
+     installed into hicolor/.
+
+     REDESIGN (2026-08, second pass): the previous version was an
+     outlined hexagon with thin internal lines — VM-confirmed
+     technically clickable but visually invisible at 16px against the
+     dark panel even after thickening strokes once already. This
+     version is a SOLID FILLED hexagon instead of an outline, which is
+     what actually guarantees contrast at tiny sizes regardless of
+     panel background — a filled shape reads at a glance, a thin
+     outline needs the eye to trace it. -->
 <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-  <!-- VM-CONFIRMED (2026-08): the original 1-1.1px thin strokes were
-       technically rendering (the button was clickable at the right
-       spot) but visually disappeared into the dark panel at 16px —
-       thickened + filled so it actually reads at panel size. -->
-  <polygon points="8,1 14.2,4.5 14.2,11.5 8,15 1.8,11.5 1.8,4.5"
-           fill="none" stroke="#00d9ff" stroke-width="1.6" stroke-linejoin="round"/>
-  <g stroke="#f0f4f8" stroke-width="1.6" stroke-linecap="round">
-    <line x1="8" y1="4" x2="8" y2="12"/>
-    <line x1="4.5" y1="6" x2="11.5" y2="10"/>
-    <line x1="11.5" y1="6" x2="4.5" y2="10"/>
-  </g>
+  <polygon points="8,0.5 14.5,4.25 14.5,11.75 8,15.5 1.5,11.75 1.5,4.25"
+           fill="#f2f2f2"/>
+  <!-- dark facet split down the middle, echoing the wallpaper mark's
+       own left/right crystal division — cut into the fill, not drawn
+       on top, so it stays crisp at 16px. -->
+  <polygon points="8,0.5 14.5,4.25 14.5,11.75 8,15.5" fill="#b0b0b0"/>
+  <rect x="7.3" y="1.5" width="1.4" height="13" fill="#0d0d0d"/>
 </svg>

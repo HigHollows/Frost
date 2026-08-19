@@ -34,7 +34,7 @@ This is the honest, buildable version of the spec's intent: FROST's own visual i
 |---|---|
 | `frost-desktop.sh` (the installer script) | Syntax-checked (`bash -n`), follows the same conventions as every other FROST script |
 | `desktop/theme/gtk-4.0/gtk.css` | Valid GTK4 CSS syntax; colors/contrast reasoned through, not rendered |
-| `desktop/extension/.../extension.js` | **VM-validated (2026-08)**, `State: ACTIVE`, zero errors — the FROST panel menu and Steam Mode quick toggle both confirmed working live. Getting there took fixing three real runtime bugs Node's syntax check never could have caught (stale `shell-version`, missing `settings-schema`, wrong `addExternalIndicator()` contract) — see ARCHITECTURE.md Lesson 7 |
+| `desktop/extension/.../extension.js` | **VM-validated (2026-08)**, `State: ACTIVE`, zero errors — the FROST panel menu and Steam Mode quick toggle both confirmed working live earlier. Getting there took fixing three real runtime bugs Node's syntax check never could have caught (stale `shell-version`, missing `settings-schema`, wrong `addExternalIndicator()` contract) — see ARCHITECTURE.md Lesson 7. The panel menu's newest additions (quick-launch shortcuts, live theme submenu) load with zero errors too, but individually clicking each one hasn't been re-confirmed — see ROADMAP.md. |
 | `desktop/extension/.../stylesheet.css` | `#panel`, `.quick-settings`, `.notification-banner`, `.overview`, `.search-entry`, `.dash` all VM-confirmed rendering correctly. The `#dashtodockContainer` hex-accent rules (added in the signature-identity pass) are newer and not yet re-verified the same way |
 | `desktop/config/dconf-frost-defaults.ini` | **VM-validated** — `dconf load` confirmed applying the theme/wallpaper/extensions live (see ARCHITECTURE.md Lesson 6 for a real bug that blocked this until fixed). The `org/guake/*` section is still lower-confidence — verify against the installed Guake version |
 | `desktop/wallpaper/frost-wallpaper.png` | **Designer-provided (2026-08)** — the crystalline "F" mark on the iceblue gradient, not the code-generated one. See `frost-wallpaper-source.png` for provenance and the Wallpaper section below for how it relates to `generate_wallpaper.py`. |
@@ -43,6 +43,8 @@ This is the honest, buildable version of the spec's intent: FROST's own visual i
 | Vitals (performance monitor) | Package/dconf install only — not yet loaded into a live session the way `frost-shell` was |
 | `frost-desktop.sh`'s GDM fixes (`disable_motd_on_gdm`, `remove_gdm_arch_logo`) | **VM-confirmed** — applied live, screenshots show a clean greeter (no logo, no garbled text) |
 | Clipboard Indicator | **VM-confirmed** — installed via AUR, enabled via dconf, panel icon visible and rendering after a clean relogin |
+| System-wide dconf defaults (`apply_system_wide_dconf_defaults`) | **VM-confirmed** — created a throwaway account after install, read its `gsettings` values with zero `dconf load` ever run for it, correctly showed FROST theme/wallpaper/extensions |
+| FROST panel "Theme" submenu | Loads with zero errors, wraps the already-VM-confirmed `frost-theme` CLI — but like the quick-launch shortcuts, individual clicks haven't been done (no mouse in the current VM test setup) |
 | GNOME Notes (Bijiben) | **VM-confirmed** — installed, `favorite-apps` dconf pin resolved correctly, icon visible in the dock |
 
 **Still open**: the FROST panel indicator's own hex icon (`icons/frost-hex.svg`) renders at a size/contrast that's hard to see against the dark panel in practice, even though the button itself is confirmed present and clickable (opens the FROST OS menu). Cosmetic, not functional — worth another pass with a bolder/filled glyph.
@@ -96,6 +98,12 @@ frost-theme current            # show the active preset
 ```
 
 GTK4 apps pick up the new palette on next launch. GNOME Shell chrome (top bar, quick settings, notifications) needs a reload: `Alt+F2` → `r` → Enter on X11, or a full logout/login on Wayland (Mutter doesn't support live Shell CSS reload on Wayland — a real GNOME limitation, not a FROST one). **VM-confirmed (2026-08, both the original 4-preset system and the mono redesign)**: switching presets correctly updated `org.gnome.desktop.interface accent-color` and both CSS files each time; a full relogin showed the new palette live.
+
+Or skip the terminal entirely: click the FROST icon in the top bar → **Theme** → pick a preset. It's the same `frost-theme` CLI under the hood (the menu item just calls it), with a dot marking whichever preset is currently active and a notification repeating the "GTK4 picks it up now, Shell chrome needs a reload" reminder (that reminder would otherwise be invisible — `frost-theme`'s own CLI output isn't shown anywhere when it's launched from a menu click instead of a terminal).
+
+### New accounts inherit the FROST look automatically
+
+`frost-desktop.sh` sets up a real dconf **system database** (`/etc/dconf/profile/user` + `/etc/dconf/db/local.d/01-frost`, compiled with `dconf update`) — not `/etc/skel`, which dconf never reads at all regardless of what ends up in it. This means any user account created *after* this install runs starts with the FROST theme, wallpaper, and extensions already on, with no per-user setup step. It sets *defaults*, not locks — `$TARGET_USER` (who already has explicit values from the per-user `dconf load` above, which always wins over a system default) and any new user can still change anything freely afterward. **VM-confirmed (2026-08)**: created a throwaway account, read its `gsettings` values with zero `dconf load` ever run for that specific user — correctly returned the FROST palette/wallpaper/extension list.
 
 ## Customizing
 

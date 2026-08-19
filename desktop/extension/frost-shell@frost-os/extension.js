@@ -18,6 +18,7 @@
 import GObject from 'gi://GObject';
 import St from 'gi://St';
 import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
 import Meta from 'gi://Meta';
 import Shell from 'gi://Shell';
 
@@ -33,6 +34,16 @@ const EASTER_EGG_LINES = [
     'You found it. Most people never right-click the snowflake.',
 ];
 
+// Mirrors desktop/tools/generate_theme_variants.py's PRESETS — kept as
+// a plain list here rather than read from disk, since the submenu just
+// needs slug+label, not the full palette.
+const THEME_PRESETS = [
+    {slug: 'frost-mono', label: 'Mono'},
+    {slug: 'frost-blue', label: 'Blue'},
+    {slug: 'frost-green', label: 'Green'},
+    {slug: 'frost-mustard', label: 'Mustard'},
+];
+
 function runDetached(argv) {
     try {
         const proc = Gio.Subprocess.new(argv, Gio.SubprocessFlags.NONE);
@@ -40,6 +51,22 @@ function runDetached(argv) {
     } catch (e) {
         logError(e, `frost-shell: failed to launch ${argv.join(' ')}`);
     }
+}
+
+function readCurrentThemeSlug() {
+    // Mirrors frost-theme's own CURRENT_FILE path
+    // (~/.config/frost-theme-current) — best-effort read, defaults to
+    // frost-mono (the actual default) if the file doesn't exist yet,
+    // e.g. before frost-theme has ever been run.
+    try {
+        const path = GLib.build_filenamev([GLib.get_home_dir(), '.config', 'frost-theme-current']);
+        const [ok, contents] = GLib.file_get_contents(path);
+        if (ok)
+            return new TextDecoder().decode(contents).trim();
+    } catch (e) {
+        // file missing is the normal/expected case on a fresh install
+    }
+    return 'frost-mono';
 }
 
 const SteamModeToggle = GObject.registerClass(
@@ -107,6 +134,8 @@ class FrostIndicator extends PanelMenu.Button {
         this._addLaunchItem('Files', ['nautilus']);
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
+        this._buildThemeSubmenu();
+
         const settingsItem = new PopupMenu.PopupMenuItem('Settings');
         settingsItem.connect('activate', () => runDetached(['gnome-control-center']));
         this.menu.addMenuItem(settingsItem);
@@ -130,6 +159,46 @@ class FrostIndicator extends PanelMenu.Button {
         const item = new PopupMenu.PopupMenuItem(label);
         item.connect('activate', () => runDetached(argv));
         this.menu.addMenuItem(item);
+    }
+
+    // Live theme switcher (2026-08): makes the `frost-theme` CLI (see
+    // desktop/tools/frost-theme) actually discoverable — before this,
+    // switching presets meant knowing the command existed at all. Each
+    // item just shells out to frost-theme itself rather than
+    // duplicating its logic here, so the CLI and the menu can never
+    // drift out of sync with each other.
+    _buildThemeSubmenu() {
+        this._themeSubmenu = new PopupMenu.PopupSubMenuMenuItem('Theme');
+        this.menu.addMenuItem(this._themeSubmenu);
+
+        this._themeMenuItems = THEME_PRESETS.map(preset => {
+            const item = new PopupMenu.PopupMenuItem(preset.label);
+            item.connect('activate', () => {
+                runDetached(['frost-theme', preset.slug]);
+                // Optimistic UI update — frost-theme itself is what
+                // actually persists the choice; this just avoids
+                // waiting for a full menu rebuild to see the checkmark
+                // move, since the subprocess above is detached/async.
+                this._setActiveThemeItem(preset.slug);
+                // frost-theme's own CLI output (X11 reload / Wayland
+                // relogin instructions) is invisible when launched
+                // detached from a menu click, not a terminal — repeat
+                // the essential part here so it isn't lost.
+                Main.notify('❄ FROST', `Switched to ${preset.label}. GTK apps update on next launch — Shell chrome needs Alt+F2 r (X11) or a relogin (Wayland).`);
+            });
+            this._themeSubmenu.menu.addMenuItem(item);
+            return {slug: preset.slug, item};
+        });
+
+        this._themeSubmenu.menu.connect('open-state-changed', (menu, isOpen) => {
+            if (isOpen)
+                this._setActiveThemeItem(readCurrentThemeSlug());
+        });
+    }
+
+    _setActiveThemeItem(activeSlug) {
+        for (const {slug, item} of this._themeMenuItems)
+            item.setOrnament(slug === activeSlug ? PopupMenu.Ornament.DOT : PopupMenu.Ornament.NONE);
     }
 });
 

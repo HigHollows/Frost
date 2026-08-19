@@ -138,6 +138,16 @@ Found while polishing the desktop experience — the login screen showed the sto
 
 **Also learned:** GNOME's own About panel (`gnome-control-center` → System → About) only ever renders `PRETTY_NAME` from `os-release` — setting `ID_LIKE=arch` (the correct freedesktop field for "this distro derives from Arch") is real and read by `hostnamectl`/scripting tools, but doesn't surface as a visible "based on Arch Linux" line in that GUI panel. Not a bug to fix — just a GNOME limitation worth knowing about before promising a specific UI location for a credit line.
 
+### Lesson 9: `pam_faillock` locks the account, not just the attempt — and the tally lives in `/run`
+
+Found while VM-testing the new system-wide dconf mechanism (`apply_system_wide_dconf_defaults()`): needed to create a throwaway user and read its `gsettings` values via `sudo -u <user> dbus-run-session -- gsettings get ...`. A malformed multi-line SSH command sent the sudo password down the wrong stdin a few times in a row — a handful of genuinely wrong-looking auth attempts, back to back, all against `sudo` specifically.
+
+After that, **every subsequent `sudo` call failed with the correct password** — not just for the malformed command, for absolutely everything, including a bare `sudo whoami`. `faillock --user testuser` (readable without root) showed exactly 3 logged failures against the `sudo` service — Arch's default `pam_faillock` policy (`deny=3`) had locked the account.
+
+**Fix:** the tally directory (`/run/faillock` by default) is tmpfs — a VM reset (`VBoxManage controlvm ... reset`, a host-level action, needs no guest auth at all) cleared it immediately; `sudo` worked again on the very next attempt with the same password that had just been "wrong" three times running.
+
+**Lesson for future debugging:** if `sudo` suddenly rejects a password that was working moments earlier, check `faillock --user <name>` before assuming the password changed or PAM config broke — a lockout looks identical to a wrong password from the outside (`Sorry, try again.`), and the fix is often just "wait out the lockout window or clear the tmpfs tally," not a deeper investigation.
+
 ### Real disk space needed is well past the per-pack estimates
 
 Each pack's own README estimated its *individual* footprint (5GB here, 10GB there) — accurate in isolation, but a full `frost-deploy.sh` run (core + branding + security + gaming) followed by `frost-desktop.sh` (GNOME) on the same 20GB test disk hit **0 bytes free**, mid-deployment. Steam's multilib dependency tree, a JDK for Burpsuite, a full GNOME Shell stack, and several AUR source builds all add up faster than each pack's standalone estimate suggests. **Budget 40GB+ for a disk that will run the full stack**, not the 15-20GB the per-pack docs suggest in isolation — those numbers are still correct for running *that one pack alone*, just not additive across all of them plus the desktop.

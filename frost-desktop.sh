@@ -441,6 +441,45 @@ install_wallpaper() {
     success "Wallpaper installed to ${dst_dir}/frost-wallpaper.png (set via dconf defaults above)"
 }
 
+apply_system_wide_dconf_defaults() {
+    step "System-wide dconf defaults (so new accounts inherit the FROST look)"
+    # apply_dconf_defaults() above only touches $TARGET_USER's own dconf
+    # database — a user created AFTER this install runs starts on stock
+    # GNOME. /etc/skel is NOT the fix: dconf never reads anything from a
+    # home directory skeleton. The real, documented mechanism is dconf's
+    # system database — see:
+    #   https://wiki.archlinux.org/title/GNOME#Set_system-wide_default_settings
+    # This sets *defaults*, not locks: any user (including $TARGET_USER,
+    # who already has explicit per-user values from apply_dconf_defaults
+    # taking precedence regardless) can still change their own settings
+    # freely afterward.
+    local dconf_profile="${ROOT_PREFIX}/etc/dconf/profile/user"
+    local dconf_db_dir="${ROOT_PREFIX}/etc/dconf/db/local.d"
+
+    if [[ -f "$dconf_profile" ]]; then
+        local backup="${dconf_profile}.frost-bak-$(date +%s)"
+        run cp "$dconf_profile" "$backup"
+        BACKED_UP_FILES+=("${dconf_profile}|${backup}")
+    fi
+
+    run mkdir -p "$(dirname "$dconf_profile")" "$dconf_db_dir"
+    if [[ "$DRY_RUN" != true ]]; then
+        cat > "$dconf_profile" <<'EOF'
+user-db:user
+system-db:local
+EOF
+    fi
+    CREATED_FILES+=("$dconf_profile")
+
+    local db_frag="${dconf_db_dir}/01-frost"
+    run cp "${ASSETS_DIR}/config/dconf-frost-defaults.ini" "$db_frag"
+    CREATED_FILES+=("$db_frag")
+
+    run chroot_exec "dconf update" \
+        || warn "dconf update failed — system-wide defaults staged at ${db_frag} but not compiled; run 'dconf update' as root manually"
+    success "New user accounts created after this install will start with the FROST look"
+}
+
 # ─────────────────────────────────────────────────────────────────────────
 # 5. MAIN
 # ─────────────────────────────────────────────────────────────────────────
@@ -466,6 +505,7 @@ main() {
     install_productivity_tools
     install_wallpaper
     apply_dconf_defaults
+    apply_system_wide_dconf_defaults
 
     if [[ "$DRY_RUN" != true ]]; then
         local marker="${ROOT_PREFIX}/opt/frost/state/desktop.marker"
